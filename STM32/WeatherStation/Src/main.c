@@ -52,7 +52,9 @@
 #include "cmsis_os.h"
 
 /* USER CODE BEGIN Includes */
-
+#include "string.h"
+#include "math.h"
+#include "stdio.h"
 /* USER CODE END Includes */
 
 /* Private variables ---------------------------------------------------------*/
@@ -364,17 +366,23 @@ void StartTask02(void const * argument)
 {
   /* USER CODE BEGIN StartTask02 */
   /* Infinite loop */
-	uint8_t buffer[10];
-	uint8_t commandTemp = 0xE3;
-	const uint8_t addresDev = 0x40;
+	const uint8_t addressTemp = 0x40 << 1;
+	uint8_t commandLoadTemp = 0xE3;
+
+	uint8_t buffer[2];
+	char charBuffer[4];
+	memset(charBuffer,'\n',4);
   for(;;)
   {
-	//HAL_I2C_Master_Transmit(&hi2c1, addresDev, &commandTemp, 1, 100);
-	//HAL_I2C_Master_Receive(&hi2c1, addresDev, buffer, 2,100);
-    HAL_I2C_Mem_Read(&hi2c1, addresDev,commandTemp,2,buffer,2,100);
-    HAL_UART_Transmit(&huart2, buffer ,2 ,100);
-    HAL_UART_Transmit(&huart2, "\n" ,1 ,100);
-	osDelay(1000);
+	  HAL_I2C_Master_Transmit(&hi2c1, addressTemp, &commandLoadTemp, 1, 100);
+	  osDelay(23);
+	  HAL_I2C_Master_Receive(&hi2c1, addressTemp, buffer, 2, 100);
+	  uint16_t data= buffer[0] << 8 | buffer[1];
+	  float temp = ((data * 175.72) / 65536) - 46.85;
+	  int intTemp = (int)temp;
+	  itoa(intTemp,charBuffer,10);
+	  HAL_UART_Transmit(&huart2,charBuffer, 4,100);
+	  osDelay(1000);
   }
   /* USER CODE END StartTask02 */
 }
