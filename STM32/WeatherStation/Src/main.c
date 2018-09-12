@@ -55,6 +55,7 @@
 #include "string.h"
 #include "math.h"
 #include "stdio.h"
+#include "stdlib.h"
 /* USER CODE END Includes */
 
 /* Private variables ---------------------------------------------------------*/
@@ -64,7 +65,6 @@ UART_HandleTypeDef huart1;
 UART_HandleTypeDef huart2;
 
 osThreadId defaultTaskHandle;
-osThreadId myTask02Handle;
 
 /* USER CODE BEGIN PV */
 /* Private variables ---------------------------------------------------------*/
@@ -78,7 +78,6 @@ static void MX_USART2_UART_Init(void);
 static void MX_I2C1_Init(void);
 static void MX_USART1_UART_Init(void);
 void StartDefaultTask(void const * argument);
-void StartTask02(void const * argument);
 
 /* USER CODE BEGIN PFP */
 /* Private function prototypes -----------------------------------------------*/
@@ -141,10 +140,6 @@ int main(void)
   /* definition and creation of defaultTask */
   osThreadDef(defaultTask, StartDefaultTask, osPriorityNormal, 0, 128);
   defaultTaskHandle = osThreadCreate(osThread(defaultTask), NULL);
-
-  /* definition and creation of myTask02 */
-  osThreadDef(myTask02, StartTask02, osPriorityIdle, 0, 128);
-  myTask02Handle = osThreadCreate(osThread(myTask02), NULL);
 
   /* USER CODE BEGIN RTOS_THREADS */
   /* add threads, ... */
@@ -353,38 +348,27 @@ void StartDefaultTask(void const * argument)
 {
 
   /* USER CODE BEGIN 5 */
-  /* Infinite loop */
-  for(;;)
-  {
-    osDelay(1);
-  }
-  /* USER CODE END 5 */ 
-}
-
-/* StartTask02 function */
-void StartTask02(void const * argument)
-{
-  /* USER CODE BEGIN StartTask02 */
-  /* Infinite loop */
 	const uint8_t addressTemp = 0x40 << 1;
 	uint8_t commandLoadTemp = 0xE3;
 
-	uint8_t buffer[2];
-	char charBuffer[4];
-	memset(charBuffer,'\n',4);
+	uint8_t buffer[10];
+
   for(;;)
   {
 	  HAL_I2C_Master_Transmit(&hi2c1, addressTemp, &commandLoadTemp, 1, 100);
 	  osDelay(23);
 	  HAL_I2C_Master_Receive(&hi2c1, addressTemp, buffer, 2, 100);
 	  uint16_t data= buffer[0] << 8 | buffer[1];
-	  float temp = ((data * 175.72) / 65536) - 46.85;
-	  int intTemp = (int)temp;
-	  itoa(intTemp,charBuffer,10);
-	  HAL_UART_Transmit(&huart2,charBuffer, 4,100);
+	  int tempratureTimesTen = (int)((((data * 175.72) / 65536) - 46.85) * 10);
+	  itoa(tempratureTimesTen, (char *)buffer, 10);
+	  buffer[9] = buffer[2];
+	  buffer[2] = '.';
+	  buffer[3] = buffer[9];
+	  HAL_UART_Transmit(&huart2, buffer, 4, 100);
+	  HAL_UART_Transmit(&huart2, " degree Celsius\n", 16, 100);
 	  osDelay(1000);
   }
-  /* USER CODE END StartTask02 */
+  /* USER CODE END 5 */ 
 }
 
 /**
