@@ -17,6 +17,15 @@ HAL_I2C_Master_Transmit(I2C_HandleTypeDef *hi2c, uint16_t DevAddress, uint8_t *p
 osDelay(uint32_t milliseconds);
 #pragma endregion
 
+#define BUFFER_SIZE_CALIBRATION_DATA (uint8_t)24
+#define STANDARD_TIMEOUT (uint32_t)100
+#define FORCE_MODE (uint8_t)0b00100101
+#define MEMORY_NOT_READY_FLAG (uint8_t)0x8
+#define BUFFER_SIZE_RAW_DATA (uint8_t)6
+#define MSB_SHIFT (uint8_t)12
+#define LSB_SHIFT (uint8_t)4
+#define XLSB_SHIFT (uint8_t)4 
+
 //Custom data structures for BMP280
 typedef struct{
     uint16_t dig_T1;
@@ -51,9 +60,9 @@ typedef struct{
 }parsedData;
 
 void getCalibrationData(uint16_t slaveAddress, uint16_t calibrationDataAddress, calibrationData * data){
-    uint8_t calibBuffer[24];
+    uint8_t calibBuffer[BUFFER_SIZE_CALIBRATION_DATA];
 
-    HAL_I2C_Mem_Read(&hi2c1, 0xEE, 0x88, 1, calibBuffer, 24, 100);
+    HAL_I2C_Mem_Read(&hi2c1, slaveAddress, calibrationDataAddress, sizeof(uint8_t), calibBuffer, BUFFER_SIZE_CALIBRATION_DATA, STANDARD_TIMEOUT);
 
     data->dig_T1 = ((uint16_t)calibBuffer[1] << 8) | calibBuffer[0];
     data->dig_T2 = ((uint16_t)calibBuffer[3] << 8) | calibBuffer[2];
@@ -70,19 +79,18 @@ void getCalibrationData(uint16_t slaveAddress, uint16_t calibrationDataAddress, 
 }
 
 void forceBMP280Measurement(uint16_t slaveAddress, uint16_t modeRegisterAddress, uint16_t statusRegisterAddress){
-        uint8_t buffer[1];
-        uint8_t modeData = 0b00100101;
-        HAL_I2C_Mem_Write(&hi2c1, slaveAddress, modeRegisterAddress, 1, &modeData, 1, 100);
-
+        uint8_t buffer;
+        uint8_t modeData = FORCE_MODE;
+        HAL_I2C_Mem_Write(&hi2c1, slaveAddress, modeRegisterAddress, sizeof(uint8_t), &modeData, sizeof(buffer), STANDARD_TIMEOUT);
         do{
-            HAL_I2C_Mem_Read(&hi2c1, slaveAddress, statusRegisterAddress, 1, buffer, 1, 100);
-        }while(buffer[0] & 0x8);
+            HAL_I2C_Mem_Read(&hi2c1, slaveAddress, statusRegisterAddress, sizeof(uint8_t), &buffer, sizeof(buffer), STANDARD_TIMEOUT);
+        }while(buffer & MEMORY_NOT_READY_FLAG);
 }
 
 void getRawMeasurmentData(uint16_t slaveAddress, uint16_t rawDataRegisterAddress, rawData * data){
-    uint8_t dataBuffer[6];
+    uint8_t dataBuffer[BUFFER_SIZE_RAW_DATA];
 
-    HAL_I2C_Mem_Read(&hi2c1, slaveAddress, rawDataRegisterAddress, 1, dataBuffer, 6, 100);
+    HAL_I2C_Mem_Read(&hi2c1, slaveAddress, rawDataRegisterAddress, sizeof(uint8_t), dataBuffer, sizeof(dataBuffer)/sizeof(uint8_t), STANDARD_TIMEOUT);
 
     data->pMSB = dataBuffer[0];
     data->pLSB = dataBuffer[1];
@@ -97,22 +105,20 @@ void parseData(rawData * raw, parsedData * data){
     uint32_t msb;
     uint32_t xlsb;
 
-    msb = (uint32_t)raw->pMSB << 12;
-    lsb = (uint32_t)raw->pLSB << 4;
-    xlsb = (uint32_t)raw->pXLSB >> 4;
+    msb = (uint32_t)raw->pMSB << MSB_SHIFT;
+    lsb = (uint32_t)raw->pLSB << LSB_SHIFT;
+    xlsb = (uint32_t)raw->pXLSB >> XLSB_SHIFT;
     data->parsedPressureData = msb | lsb | xlsb;
 
-    msb = (uint32_t)raw->tMSB << 12;
-    lsb = (uint32_t)raw->tLSB << 4;
-    xlsb = (uint32_t)raw->tXLSB >> 4;
+    msb = (uint32_t)raw->tMSB << MSB_SHIFT;
+    lsb = (uint32_t)raw->tLSB << LSB_SHIFT;
+    xlsb = (uint32_t)raw->tXLSB >> XLSB_SHIFT;
     data->parsedTemperatureData = msb | lsb | xlsb;
 }
 
 void calculateTemperature(parsedData * parsed, calibrationData * calibData){
     double var1;
 	double var2;
-	double temperature_min = -40;
-	double temperature_max = 85;
 
     var1 = ((double)parsed->parsedTemperatureData) / 16384.0 - ((double)calibData->dig_T1) / 1024.0;
     var1 = var1 * ((double)calibData->dig_T2);
@@ -120,12 +126,6 @@ void calculateTemperature(parsedData * parsed, calibrationData * calibData){
     var2 = (var2 * var2) * ((double)calibData->dig_T3);
     parsed->t_fine = (int32_t)(var1 + var2);
     parsed->temperature = (var1 + var2) / 5120.0;
-
-    if (parsed->temperature < temperature_min)
-		parsed->temperature = temperature_min;
-	else if (parsed->temperature > temperature_max)
-		parsed->temperature = temperature_max;
-
 }
 
 void calculatePressure(parsedData * parsed, calibrationData * calibData){
