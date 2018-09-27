@@ -50,20 +50,10 @@ typedef struct{
     double pressure;
 }parsedData;
 
-typedef struct{
-    uint16_t modeRegisterAddress;
-    uint16_t statusRegisterAddress;
-    uint16_t slaveAddressBMP280;
-    uint16_t rawDataRegisterAddress;
-    uint16_t startAddressCalibData;
-}BMP280Handle;
-
 void getCalibrationData(uint16_t slaveAddress, uint16_t calibrationDataAddress, calibrationData * data){
     uint8_t calibBuffer[24];
 
-    for(uint8_t i = 0; i < 24; ++i){
-    	HAL_I2C_Mem_Read(&hi2c1, 0xEE, 0x88 + i, 1, calibBuffer + i, 1, 100);
-    }
+    HAL_I2C_Mem_Read(&hi2c1, 0xEE, 0x88, 1, calibBuffer, 24, 100);
 
     data->dig_T1 = ((uint16_t)calibBuffer[1] << 8) | calibBuffer[0];
     data->dig_T2 = ((uint16_t)calibBuffer[3] << 8) | calibBuffer[2];
@@ -76,7 +66,7 @@ void getCalibrationData(uint16_t slaveAddress, uint16_t calibrationDataAddress, 
     data->dig_P6 = ((uint16_t)calibBuffer[17] << 8) | calibBuffer[16];
     data->dig_P7 = ((uint16_t)calibBuffer[19] << 8) | calibBuffer[18];
     data->dig_P8 = ((uint16_t)calibBuffer[21] << 8) | calibBuffer[20];
-    data->dig_P1 = ((uint16_t)calibBuffer[23] << 8) | calibBuffer[22];
+    data->dig_P9 = ((uint16_t)calibBuffer[23] << 8) | calibBuffer[22];
 }
 
 void forceBMP280Measurement(uint16_t slaveAddress, uint16_t modeRegisterAddress, uint16_t statusRegisterAddress){
@@ -90,12 +80,9 @@ void forceBMP280Measurement(uint16_t slaveAddress, uint16_t modeRegisterAddress,
 }
 
 void getRawMeasurmentData(uint16_t slaveAddress, uint16_t rawDataRegisterAddress, rawData * data){
-
     uint8_t dataBuffer[6];
 
-    for(uint8_t i = 0; i < 6; ++i){
-    	HAL_I2C_Mem_Read(&hi2c1, slaveAddress, rawDataRegisterAddress + i, 1, dataBuffer + i, 1, 100);
-    }
+    HAL_I2C_Mem_Read(&hi2c1, slaveAddress, rawDataRegisterAddress, 1, dataBuffer, 6, 100);
 
     data->pMSB = dataBuffer[0];
     data->pLSB = dataBuffer[1];
@@ -172,7 +159,7 @@ void calculatePressure(parsedData * parsed, calibrationData * calibData){
 		pressure = pressure_min;
 	}
 
-	parsed->pressure = pressure;
+	parsed->pressure = pressure / 100;
 }
 
 double getPressure(){
@@ -181,8 +168,9 @@ double getPressure(){
     uint16_t slaveAddressBMP280 = 0x77 << 1;
     uint16_t rawDataRegisterAddress = 0xF7;
     uint16_t startAddressCalibData = 0x88;
-    parsedData parsed;
+
     calibrationData calibData;
+    parsedData parsed;
     rawData raw;
 
     // Get calibration data
@@ -204,5 +192,5 @@ double getPressure(){
     calculatePressure(&parsed, &calibData);
 
     //return parsed.pressure;
-    return 0;
+    return parsed.pressure;
 }
