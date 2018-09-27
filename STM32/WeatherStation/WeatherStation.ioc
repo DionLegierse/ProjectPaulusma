@@ -2,7 +2,7 @@
 FREERTOS.FootprintOK=true
 FREERTOS.IPParameters=Tasks01,FootprintOK,Mutexes01
 FREERTOS.Mutexes01=I2CBusMutex,Dynamic,NULL;UART2BusMutex,Dynamic,NULL
-FREERTOS.Tasks01=defaultTask,0,128,StartDefaultTask,Default,NULL,Dynamic,NULL,NULL;taskHumidity,-3,128,humidityStart,Default,NULL,Dynamic,NULL,NULL
+FREERTOS.Tasks01=taskTemperature,0,128,StartTaskTemperature,Default,NULL,Dynamic,NULL,NULL;taskHumidity,-3,128,startTaskHumidity,Default,NULL,Dynamic,NULL,NULL;taskPressure,-3,128,startTaskPressure,Default,NULL,Dynamic,NULL,NULL
 File.Version=6
 KeepUserPlacement=true
 Mcu.Family=STM32F0
