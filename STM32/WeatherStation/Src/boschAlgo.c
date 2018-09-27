@@ -25,6 +25,8 @@ osDelay(uint32_t milliseconds);
 #define MSB_SHIFT (uint8_t)12
 #define LSB_SHIFT (uint8_t)4
 #define XLSB_SHIFT (uint8_t)4 
+#define INVALID_PRESSURE (double)0
+#define PASCAL_TO_MILLIBAR_DIVISION_FACTOR (double)100
 
 //Custom data structures for BMP280
 typedef struct{
@@ -133,8 +135,6 @@ void calculatePressure(parsedData * parsed, calibrationData * calibData){
 	double var2;
 	double var3;
 	double pressure;
-	double pressure_min = 30000.0;
-	double pressure_max = 110000.0;
 
 	var1 = ((double)parsed->t_fine / 2.0) - 64000.0;
 	var2 = var1 * var1 * ((double)calibData->dig_P6) / 32768.0;
@@ -151,15 +151,11 @@ void calculatePressure(parsedData * parsed, calibrationData * calibData){
 		var2 = pressure * ((double)calibData->dig_P8) / 32768.0;
 		pressure = pressure + (var1 + var2 + ((double)calibData->dig_P7)) / 16.0;
 
-		if (pressure < pressure_min)
-			pressure = pressure_min;
-		else if (pressure > pressure_max)
-			pressure = pressure_max;
 	} else { /* Invalid case */
-		pressure = pressure_min;
+		pressure = INVALID_PRESSURE;
 	}
 
-	parsed->pressure = pressure / 100;
+	parsed->pressure = pressure / PASCAL_TO_MILLIBAR_DIVISION_FACTOR;
 }
 
 double getPressure(){
