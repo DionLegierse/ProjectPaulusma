@@ -578,7 +578,7 @@ uint8_t get_data_from_is7021(uint8_t * buffer, uint8_t * command,
  The buffer always requires a storage space in the back for a point within the string.
  */
 uint8_t convert_data_to_temp_string(uint8_t * buffer, uint8_t bufferLength) {
-	if (bufferLength < 4)
+	if (bufferLength < 5)
 		return ABORTED ;
 	else {
 		uint16_t data = buffer[0] << MSB_OFFSET | buffer[1];
@@ -588,6 +588,7 @@ uint8_t convert_data_to_temp_string(uint8_t * buffer, uint8_t bufferLength) {
 		buffer[bufferLength - 1] = buffer[2];
 		buffer[2] = '.';
 		buffer[3] = buffer[bufferLength - 1];
+		buffer[4] = '\0';
 		return SUCCES ;
 	}
 }
@@ -601,12 +602,13 @@ uint8_t convert_data_to_temp_string(uint8_t * buffer, uint8_t bufferLength) {
  converts them to a string and stores this string in the first two bytes of the buffer.
  */
 uint8_t convert_data_to_humid_string(uint8_t * buffer, uint8_t bufferLength) {
-	if (bufferLength < 2)
+	if (bufferLength < 3)
 		return ABORTED ;
 	else {
 		uint16_t data = buffer[0] << MSB_OFFSET | buffer[1];
 		int humidTimesTen = (int) roundf(((((data * 125) / 65536) - 6) * 100));
 		itoa(humidTimesTen, (char *) buffer, 10);
+		buffer[2] = '\0';
 		return SUCCES ;
 	}
 }
@@ -617,7 +619,7 @@ void StartTaskTemperature(void const * argument) {
 
 	/* USER CODE BEGIN 5 */
 
-	const uint8_t bufferSize = 4;
+	const uint8_t bufferSize = 40;
 	uint8_t commandLoadTemp = 0xE3;
 
 	uint8_t buffer[bufferSize];
@@ -627,11 +629,11 @@ void StartTaskTemperature(void const * argument) {
 		get_data_from_is7021(buffer, &commandLoadTemp, bufferSize);
 
 		convert_data_to_temp_string(buffer, bufferSize);
-
+		uint8_t str[5];
+		strcpy(str,buffer);
+		sprintf(buffer, "%s degree Celsius\n", str);
 		xSemaphoreTake(UART2BusMutexHandle, UART_MUTEX_TIMEOUT);
-		HAL_UART_Transmit(&huart2, buffer, bufferSize, STANDARD_TIMEOUT);
-		HAL_UART_Transmit(&huart2, (uint8_t *) " degree Celsius\n", 16,
-		STANDARD_TIMEOUT);
+		HAL_UART_Transmit(&huart2,buffer, strlen(buffer), 100);
 		xSemaphoreGive(UART2BusMutexHandle);
 		osDelay(STANDARD_OS_DELAY);
 	}
@@ -640,7 +642,7 @@ void StartTaskTemperature(void const * argument) {
 
 /* startTaskHumidity function */
 void startTaskHumidity(void const * argument) {
-	const uint8_t bufferSize = 2;
+	const uint8_t bufferSize = 40;
 	uint8_t commandLoadHumidity = 0xE5;
 
 	uint8_t buffer[bufferSize];
@@ -650,11 +652,11 @@ void startTaskHumidity(void const * argument) {
 		get_data_from_is7021(buffer, &commandLoadHumidity, bufferSize);
 
 		convert_data_to_humid_string(buffer, bufferSize);
-
+		uint8_t str[3];
+		strcpy(str,buffer);
+		sprintf(buffer, "%s percent humid\n", str);
 		xSemaphoreTake(UART2BusMutexHandle, UART_MUTEX_TIMEOUT);
-		HAL_UART_Transmit(&huart2, buffer, bufferSize, STANDARD_TIMEOUT);
-		HAL_UART_Transmit(&huart2, (uint8_t *) "\% humid\n", 8,
-				STANDARD_TIMEOUT);
+		HAL_UART_Transmit(&huart2, buffer, strlen(buffer), STANDARD_TIMEOUT);
 		xSemaphoreGive(UART2BusMutexHandle);
 		osDelay(STANDARD_OS_DELAY);
 	}
