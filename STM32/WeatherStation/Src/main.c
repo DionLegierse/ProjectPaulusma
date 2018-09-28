@@ -670,7 +670,7 @@ void startTaskPressure(void const * argument) {
 		double pressure = getPressure();
 		sprintf(buffer, "%d millibar\n", (uint32_t)pressure);
 		xSemaphoreTake(UART2BusMutexHandle, UART_MUTEX_TIMEOUT);
-		HAL_UART_Transmit(&huart2, buffer, (uint8_t)strlen(buffer), STANDARD_TIMEOUT);
+		HAL_UART_Transmit(&huart2, buffer, strlen(buffer), STANDARD_TIMEOUT);
 		xSemaphoreGive(UART2BusMutexHandle);
 		osDelay(STANDARD_OS_DELAY);
 	}
