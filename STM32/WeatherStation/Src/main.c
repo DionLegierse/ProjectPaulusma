@@ -360,7 +360,7 @@ static void MX_GPIO_Init(void) {
 #define MSB_OFFSET (uint8_t) 8
 #define STANDARD_MUTEX_TAKE_TIME (uint32_t)100
 #define PRESSURE_MUTEX_TAKE_TIME (uint32_t)500
-#define MAX_STRING_LENGTH (uint8_t)80
+#define MAX_BUFFER_SIZE (uint8_t)40
 
 #define ABORTED (uint8_t) 0
 #define SUCCES (uint8_t) 1
@@ -618,17 +618,15 @@ uint8_t convert_data_to_humid_string(uint8_t * buffer, uint8_t bufferLength) {
 void StartTaskTemperature(void const * argument) {
 
 	/* USER CODE BEGIN 5 */
-
-	const uint8_t bufferSize = 40;
 	uint8_t commandLoadTemp = 0xE3;
 
-	uint8_t buffer[bufferSize];
+	uint8_t buffer[ MAX_BUFFER_SIZE];
 
 	/* Infinite loop */
 	for (;;) {
-		get_data_from_is7021(buffer, &commandLoadTemp, bufferSize);
+		get_data_from_is7021(buffer, &commandLoadTemp, MAX_BUFFER_SIZE);
 
-		convert_data_to_temp_string(buffer, bufferSize);
+		convert_data_to_temp_string(buffer, MAX_BUFFER_SIZE);
 		uint8_t str[5];
 		strcpy(str,buffer);
 		sprintf(buffer, "%s degree Celsius\n", str);
@@ -642,16 +640,15 @@ void StartTaskTemperature(void const * argument) {
 
 /* startTaskHumidity function */
 void startTaskHumidity(void const * argument) {
-	const uint8_t bufferSize = 40;
 	uint8_t commandLoadHumidity = 0xE5;
 
-	uint8_t buffer[bufferSize];
+	uint8_t buffer[MAX_BUFFER_SIZE];
 
 	/* Infinite loop */
 	for (;;) {
-		get_data_from_is7021(buffer, &commandLoadHumidity, bufferSize);
+		get_data_from_is7021(buffer, &commandLoadHumidity, MAX_BUFFER_SIZE);
 
-		convert_data_to_humid_string(buffer, bufferSize);
+		convert_data_to_humid_string(buffer, MAX_BUFFER_SIZE);
 		uint8_t str[3];
 		strcpy(str,buffer);
 		sprintf(buffer, "%s percent humid\n", str);
@@ -666,9 +663,8 @@ void startTaskHumidity(void const * argument) {
 void startTaskPressure(void const * argument) {
 	/* USER CODE BEGIN startTaskPressure */
 	/* Infinite loop */
-	const uint8_t bufferSize = 20;
-	uint8_t buffer[bufferSize];
-	memset(buffer, '\n', bufferSize);
+	uint8_t buffer[MAX_BUFFER_SIZE];
+	memset(buffer, '\n', MAX_BUFFER_SIZE);
 
 	for (;;) {
 		double pressure = getPressure();
