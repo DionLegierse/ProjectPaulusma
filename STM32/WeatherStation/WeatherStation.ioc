@@ -1,8 +1,9 @@
 #MicroXplorer Configuration settings - do not modify
 FREERTOS.FootprintOK=true
-FREERTOS.IPParameters=Tasks01,FootprintOK,Mutexes01
-FREERTOS.Mutexes01=I2CBusMutex,Dynamic,NULL;UART2BusMutex,Dynamic,NULL
-FREERTOS.Tasks01=taskTemperature,0,128,StartTaskTemperature,Default,NULL,Dynamic,NULL,NULL;taskHumidity,-3,128,startTaskHumidity,Default,NULL,Dynamic,NULL,NULL;taskPressure,-3,128,startTaskPressure,Default,NULL,Dynamic,NULL,NULL
+FREERTOS.IPParameters=Tasks01,FootprintOK,Mutexes01,configTOTAL_HEAP_SIZE
+FREERTOS.Mutexes01=I2CBusMutex,Dynamic,NULL;UART2BusMutex,Dynamic,NULL;UART1BusMutex,Dynamic,NULL
+FREERTOS.Tasks01=taskTemperature,0,128,StartTaskTemperature,Default,NULL,Dynamic,NULL,NULL;taskHumidity,-3,128,startTaskHumidity,Default,NULL,Dynamic,NULL,NULL;taskPressure,-3,128,startTaskPressure,Default,NULL,Dynamic,NULL,NULL;taskSendDataWif,-3,128,startTaskWifi,Default,NULL,Dynamic,NULL,NULL
+FREERTOS.configTOTAL_HEAP_SIZE=3800
 File.Version=6
 KeepUserPlacement=true
 Mcu.Family=STM32F0
