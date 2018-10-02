@@ -599,20 +599,9 @@ uint8_t get_data_from_is7021(uint8_t * buffer, uint8_t * command,
  converts them to a string and stores this string in the first three bytes of the buffer.
  The buffer always requires a storage space in the back for a point within the string.
  */
-uint8_t convert_data_to_temp_string(uint8_t * buffer, uint8_t bufferLength) {
-	if (bufferLength < 5)
-		return ABORTED ;
-	else {
-		uint16_t data = buffer[0] << MSB_OFFSET | buffer[1];
-		int tempratureTimesTen = (int) roundf(
-				((((data * 175.72) / 65536) - 46.85) * 100));
-		itoa(tempratureTimesTen, (char *) buffer, 10);
-		buffer[bufferLength - 1] = buffer[2];
-		buffer[2] = '.';
-		buffer[3] = buffer[bufferLength - 1];
-		buffer[4] = '\0';
-		return SUCCES ;
-	}
+uint16_t convert_data_temp_to_int(uint8_t * buffer, uint8_t bufferLength) {
+	uint16_t data = buffer[0] << MSB_OFFSET | buffer[1];
+	return (uint16_t) roundf(((((data * 175.72) / 65536) - 46.85) * 10));
 }
 
 /*
@@ -623,28 +612,21 @@ uint8_t convert_data_to_temp_string(uint8_t * buffer, uint8_t bufferLength) {
  FUNCTION: this functions takes the first two bytes in the buffer and
  converts them to a string and stores this string in the first two bytes of the buffer.
  */
-uint8_t convert_data_to_humid_string(uint8_t * buffer, uint8_t bufferLength) {
-	if (bufferLength < 3)
-		return ABORTED ;
-	else {
-		uint16_t data = buffer[0] << MSB_OFFSET | buffer[1];
-		int humidTimesTen = (int) roundf(((((data * 125) / 65536) - 6) * 100));
-		itoa(humidTimesTen, (char *) buffer, 10);
-		buffer[2] = '\0';
-		return SUCCES ;
-	}
+uint16_t convert_data_humid_to_int(uint8_t * buffer, uint8_t bufferLength) {
+	uint16_t data = buffer[0] << MSB_OFFSET | buffer[1];
+	return (uint16_t) roundf(((((data * 125) / 65536) - 6)));
 }
 
 /* USER CODE END 4 */
 
 //Global variables
-float globalPressure = 0;
-float globalTemperature = 0;
-uint8_t globalHumidity = 0;
+uint16_t globalPressure = 0;
+uint16_t globalTemperature = 0;
+uint16_t globalHumidity = 0;
 
-uint8_t pressureDoneFlag = 0;
-uint8_t temperatureDoneFlag = 0;
-uint8_t humidityDoneFlag = 0;
+uint8_t isPressureDone = NOT_READY;
+uint8_t isTemperatureDone = NOT_READY;
+uint8_t isHumidityDoneFlag = NOT_READY;
 
 /* StartTaskTemperature function */
 void StartTaskTemperature(void const * argument)
@@ -658,20 +640,9 @@ void StartTaskTemperature(void const * argument)
 	/* Infinite loop */
 	for (;;) {
 		get_data_from_is7021(buffer, &commandLoadTemp, MAX_BUFFER_SIZE);
-
-		convert_data_to_temp_string(buffer, MAX_BUFFER_SIZE);
-
-		globalTemperature = (float)atof(buffer);
-		temperatureDoneFlag = READY;
-
-		uint8_t str[5];
-		strcpy(str,buffer);
-		sprintf(buffer, "%s degree Celsius\n", str);
-
-		xSemaphoreTake(UART2BusMutexHandle, UART_MUTEX_TIMEOUT);
-		HAL_UART_Transmit(&huart2,buffer, strlen(buffer), 100);
-		xSemaphoreGive(UART2BusMutexHandle);
-		osDelay(STANDARD_OS_DELAY);
+		globalTemperature = convert_data_temp_to_int(buffer, MAX_BUFFER_SIZE);
+		isTemperatureDone = READY;
+		vTaskSuspend(taskTemperatureHandle);
 	}
   /* USER CODE END 5 */ 
 }
@@ -687,18 +658,10 @@ void startTaskHumidity(void const * argument)
 	for (;;) {
 		get_data_from_is7021(buffer, &commandLoadHumidity, MAX_BUFFER_SIZE);
 
-		convert_data_to_humid_string(buffer, MAX_BUFFER_SIZE);
+		globalHumidity = convert_data_humid_to_int(buffer, MAX_BUFFER_SIZE);
 
-		globalHumidity = (uint8_t)atoi(buffer);
-		humidityDoneFlag = READY;
-
-		uint8_t str[3];
-		strcpy(str,buffer);
-		sprintf(buffer, "%s percent humid\n", str);
-		xSemaphoreTake(UART2BusMutexHandle, UART_MUTEX_TIMEOUT);
-		HAL_UART_Transmit(&huart2, buffer, strlen(buffer), STANDARD_TIMEOUT);
-		xSemaphoreGive(UART2BusMutexHandle);
-		osDelay(STANDARD_OS_DELAY);
+		isHumidityDoneFlag = READY;
+		vTaskSuspend(taskHumidityHandle);
 	}
 }
 
@@ -711,15 +674,9 @@ void startTaskPressure(void const * argument)
 	memset(buffer, '\n', MAX_BUFFER_SIZE);
 
 	for (;;) {
-		globalPressure = getPressure();
-		pressureDoneFlag = READY;
-
-		sprintf(buffer, "%d millibar\n", (uint32_t)globalPressure);
-
-		xSemaphoreTake(UART2BusMutexHandle, UART_MUTEX_TIMEOUT);
-		HAL_UART_Transmit(&huart2, buffer, strlen(buffer), STANDARD_TIMEOUT);
-		xSemaphoreGive(UART2BusMutexHandle);
-		osDelay(STANDARD_OS_DELAY);
+		globalPressure = (uint16_t)getPressure();
+		isPressureDone = READY;
+		vTaskSuspend(taskPressureHandle);
 	}
   /* USER CODE END startTaskPressure */
 }
@@ -728,13 +685,36 @@ void startTaskPressure(void const * argument)
 void startTaskWifi(void const * argument)
 {
   /* USER CODE BEGIN startTaskWifi */
+	char buffer[MAX_BUFFER_SIZE];
+	int counter = 0;
   /* Infinite loop */
   for(;;)
   {
-	  if(humidityDoneFlag && pressureDoneFlag && temperatureDoneFlag){
-		  humidityDoneFlag = pressureDoneFlag = temperatureDoneFlag = NOT_READY;
+	  if(isHumidityDoneFlag && isPressureDone && isTemperatureDone){
+		  ++counter;
+
+		  xSemaphoreTake(UART2BusMutexHandle, STANDARD_MUTEX_TAKE_TIME);
+		  sprintf(buffer, "%d degrees Celcius\n", globalTemperature);
+		  HAL_UART_Transmit(&huart2, buffer, strlen(buffer), 100);
+
+		  sprintf(buffer, "%d percent humid\n", globalHumidity);
+		  HAL_UART_Transmit(&huart2, buffer, strlen(buffer), 100);
+
+		  sprintf(buffer, "%d millibar of pressure\n", globalPressure);
+		  HAL_UART_Transmit(&huart2, buffer, strlen(buffer), 100);
+
+		  sprintf(buffer, "%d metingsronde zijn klaar\n\n", counter);
+		  HAL_UART_Transmit(&huart2, buffer, strlen(buffer), 100);
+		  xSemaphoreGive(UART2BusMutexHandle);
+
+		  isHumidityDoneFlag = isPressureDone = isTemperatureDone = NOT_READY;
+
+		  vTaskResume(taskTemperatureHandle);
+		  vTaskResume(taskPressureHandle);
+		  vTaskResume(taskHumidityHandle);
+
+		  osDelay(50000);
 	  }
-	  osDelay(STANDARD_OS_DELAY);
   }
   /* USER CODE END startTaskWifi */
 }
