@@ -79,13 +79,8 @@ typedef struct {
 #define INVALID_PRESSURE (double)0
 #define PASCAL_TO_MILLIBAR_DIVISION_FACTOR (double)100
 
-void getCalibrationData(uint16_t slaveAddress, uint16_t calibrationDataAddress, calibrationData * data);
-void forceBMP280Measurement(uint16_t slaveAddress, uint16_t modeRegisterAddress, uint16_t statusRegisterAddress);
-void getRawMeasurmentData(uint16_t slaveAddress, uint16_t rawDataRegisterAddress, rawData * data);
-void parseData(rawData * raw, parsedData * data);
-void calculateTemperature(parsedData * parsed, calibrationData * calibData);
-void calculatePressure(parsedData * parsed, calibrationData * calibData);
 double getPressure();
 void get_data_from_is7021(uint8_t * buffer, uint8_t * command);
 uint16_t convert_data_temp_to_int(uint8_t * buffer);
 uint16_t convert_data_humid_to_int(uint8_t * buffer);
+
