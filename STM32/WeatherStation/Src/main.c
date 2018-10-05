@@ -477,7 +477,6 @@ void startTaskWifi(void const * argument)
 		  HAL_UART_Transmit(&huart2, buffer, strlen(buffer), 100);
 		  xSemaphoreGive(UART2BusMutexHandle);
 
-		  HAL_UART_Transmit(&huart1, buffer, strlen(buffer), 100);
 		  isHumidityDoneFlag = isPressureDone = isTemperatureDone = NOT_READY;
 
 		  vTaskResume(taskTemperatureHandle);
