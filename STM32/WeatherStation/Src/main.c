@@ -301,7 +301,7 @@ static void MX_USART1_UART_Init(void)
 {
 
   huart1.Instance = USART1;
-  huart1.Init.BaudRate = 38400;
+  huart1.Init.BaudRate = 115200;
   huart1.Init.WordLength = UART_WORDLENGTH_8B;
   huart1.Init.StopBits = UART_STOPBITS_1;
   huart1.Init.Parity = UART_PARITY_NONE;
@@ -444,6 +444,19 @@ void startTaskWifi(void const * argument)
   /* USER CODE BEGIN startTaskWifi */
 	char buffer[MAX_BUFFER_SIZE];
 	int counter = 0;
+
+	sprintf(buffer, "AT+GMR\r\n");
+	HAL_UART_Transmit(&huart1, buffer, strlen(buffer), 100);
+	osDelay(1000);
+
+	sprintf(buffer, "AT+CWMODE=1\r\n");
+	HAL_UART_Transmit(&huart1, buffer, strlen(buffer), 100);
+	osDelay(1000);
+
+	sprintf(buffer, "AT+CWJAP=\"baulusma\",\"frikandel\"\r\n");
+	HAL_UART_Transmit(&huart1, buffer, strlen(buffer), 100);
+	osDelay(1000);
+
   /* Infinite loop */
   for(;;)
   {
@@ -464,6 +477,7 @@ void startTaskWifi(void const * argument)
 		  HAL_UART_Transmit(&huart2, buffer, strlen(buffer), 100);
 		  xSemaphoreGive(UART2BusMutexHandle);
 
+		  HAL_UART_Transmit(&huart1, buffer, strlen(buffer), 100);
 		  isHumidityDoneFlag = isPressureDone = isTemperatureDone = NOT_READY;
 
 		  vTaskResume(taskTemperatureHandle);
