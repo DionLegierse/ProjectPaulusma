@@ -446,16 +446,13 @@ void startTaskWifi(void const * argument)
 	int counter = 0;
 
 	sprintf(buffer, "AT+GMR\r\n");
-	HAL_UART_Transmit(&huart1, buffer, strlen(buffer), 100);
-	osDelay(1000);
+	HAL_UART_Transmit_IT(&huart1, buffer, strlen(buffer));
 
 	sprintf(buffer, "AT+CWMODE=1\r\n");
-	HAL_UART_Transmit(&huart1, buffer, strlen(buffer), 100);
-	osDelay(1000);
+	HAL_UART_Transmit_IT(&huart1, buffer, strlen(buffer));
 
 	sprintf(buffer, "AT+CWJAP=\"baulusma\",\"frikandel\"\r\n");
-	HAL_UART_Transmit(&huart1, buffer, strlen(buffer), 100);
-	osDelay(1000);
+	HAL_UART_Transmit_IT(&huart1, buffer, strlen(buffer));
 
   /* Infinite loop */
   for(;;)
