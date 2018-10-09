@@ -446,16 +446,14 @@ void startTaskWifi(void const * argument)
 	char buffer[MAX_BUFFER_SIZE];
 	int counter = 0;
 
-
 	initialize_wifi_connection();
-
 
   /* Infinite loop */
   for(;;)
   {
 	  if(isHumidityDoneFlag && isPressureDone && isTemperatureDone){
 		  ++counter;
-		 // send_data_to_server(globalTemperature, globalHumidity, globalPressure);
+		  send_data_to_server(globalTemperature, globalHumidity, globalPressure);
 
 		  xSemaphoreTake(UART2BusMutexHandle, STANDARD_MUTEX_TAKE_TIME);
 		  sprintf(buffer, "%d degrees Celcius\n", globalTemperature);
