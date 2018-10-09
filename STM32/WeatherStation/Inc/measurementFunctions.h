@@ -62,7 +62,7 @@ typedef struct {
 #define STANDARD_MUTEX_TAKE_TIME (uint32_t)100
 #define PRESSURE_MUTEX_TAKE_TIME (uint32_t)500
 #define MAX_BUFFER_SIZE (uint8_t)40
-#define MEASURE_DELAY (uint32_t)1000
+#define MEASURE_DELAY (uint32_t)5000
 
 #define ABORTED (uint8_t) 0
 #define SUCCES (uint8_t) 1
@@ -81,6 +81,6 @@ typedef struct {
 
 double getPressure();
 void get_data_from_is7021(uint8_t * buffer, uint8_t * command);
-uint16_t convert_data_temp_to_int(uint8_t * buffer);
+int16_t convert_data_temp_to_int(uint8_t * buffer);
 uint16_t convert_data_humid_to_int(uint8_t * buffer);
 

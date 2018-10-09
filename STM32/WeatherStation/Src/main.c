@@ -58,6 +58,7 @@
 #include "stdlib.h"
 
 #include "measurementFunctions.h"
+#include "wifiFunctions.h"
 /* USER CODE END Includes */
 
 /* Private variables ---------------------------------------------------------*/
@@ -376,7 +377,7 @@ static void MX_GPIO_Init(void)
 
 /* USER CODE BEGIN 4 */
 uint16_t globalPressure = 0;
-uint16_t globalTemperature = 0;
+int16_t globalTemperature = 0;
 uint16_t globalHumidity = 0;
 
 uint8_t isPressureDone = NOT_READY;
@@ -445,23 +446,14 @@ void startTaskWifi(void const * argument)
 	char buffer[MAX_BUFFER_SIZE];
 	int counter = 0;
 
-	sprintf(buffer, "AT+GMR\r\n");
-	HAL_UART_Transmit(&huart1, buffer, strlen(buffer), 100);
-	osDelay(1000);
-
-	sprintf(buffer, "AT+CWMODE=1\r\n");
-	HAL_UART_Transmit(&huart1, buffer, strlen(buffer), 100);
-	osDelay(1000);
-
-	sprintf(buffer, "AT+CWJAP=\"baulusma\",\"frikandel\"\r\n");
-	HAL_UART_Transmit(&huart1, buffer, strlen(buffer), 100);
-	osDelay(1000);
+	//initialize_wifi_connection();
 
   /* Infinite loop */
   for(;;)
   {
 	  if(isHumidityDoneFlag && isPressureDone && isTemperatureDone){
 		  ++counter;
+		 // send_data_to_server(globalTemperature, globalHumidity, globalPressure);
 
 		  xSemaphoreTake(UART2BusMutexHandle, STANDARD_MUTEX_TAKE_TIME);
 		  sprintf(buffer, "%d degrees Celcius\n", globalTemperature);
