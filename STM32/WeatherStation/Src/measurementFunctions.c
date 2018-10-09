@@ -153,9 +153,9 @@ void get_data_from_is7021(uint8_t * buffer, uint8_t * command) {
 	xSemaphoreGive(I2CBusMutexHandle);
 }
 
-uint16_t convert_data_temp_to_int(uint8_t * buffer) {
-	uint16_t data = buffer[0] << MSB_OFFSET | buffer[1];
-	return (uint16_t) roundf(((((data * 175.72) / 65536) - 46.85) * 10));
+int16_t convert_data_temp_to_int(uint8_t * buffer) {
+	int16_t data = buffer[0] << MSB_OFFSET | buffer[1];
+	return (int16_t) roundf(((((data * 175.72) / 65536) - 46.85) * 10));
 }
 
 uint16_t convert_data_humid_to_int(uint8_t * buffer) {
