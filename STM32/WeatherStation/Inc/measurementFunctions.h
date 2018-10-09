@@ -81,6 +81,6 @@ typedef struct {
 
 double getPressure();
 void get_data_from_is7021(uint8_t * buffer, uint8_t * command);
-uint16_t convert_data_temp_to_int(uint8_t * buffer);
+int16_t convert_data_temp_to_int(uint8_t * buffer);
 uint16_t convert_data_humid_to_int(uint8_t * buffer);
 
