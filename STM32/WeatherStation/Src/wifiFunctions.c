@@ -6,10 +6,13 @@
  */
 #include "wifiFunctions.h"
 
+<<<<<<< HEAD
 const char hostname[] = "student.aii.avans.nl/ENG/dallegie/\0";
 const char portNumber[] = "80\0";
 const char
 
+=======
+>>>>>>> cc1e482693368c588c5dc8b2bc5d273359997349
 void initialize_wifi_connection(){
 		uint8_t buffer[STANDARD_WIFI_BUFFER_SIZE];
 		sprintf(buffer, "AT+GMR\r\n");
@@ -22,6 +25,7 @@ void initialize_wifi_connection(){
 		HAL_UART_Transmit_IT(&huart1, buffer, strlen(buffer));
 }
 
+<<<<<<< HEAD
 void send_data_to_server(int16_t temperature, uint16_t humidity, uint16_t pressure){
 	char str[MAX_WIFI_BUFFER_SIZE] = "\0";
 
@@ -33,3 +37,5 @@ void send_data_to_server(int16_t temperature, uint16_t humidity, uint16_t pressu
 	}while(strcmp(str, "OK"));
 }
 
+=======
+>>>>>>> cc1e482693368c588c5dc8b2bc5d273359997349

@@ -446,7 +446,11 @@ void startTaskWifi(void const * argument)
 	char buffer[MAX_BUFFER_SIZE];
 	int counter = 0;
 
+<<<<<<< HEAD
 	//initialize_wifi_connection();
+=======
+	initialize_wifi_connection();
+>>>>>>> cc1e482693368c588c5dc8b2bc5d273359997349
 
   /* Infinite loop */
   for(;;)
