@@ -457,16 +457,16 @@ void startTaskWifi(void const * argument)
 
 		  xSemaphoreTake(UART2BusMutexHandle, STANDARD_MUTEX_TAKE_TIME);
 		  sprintf(buffer, "%d degrees Celcius\n", globalTemperature);
-		  HAL_UART_Transmit(&huart2, buffer, strlen(buffer), 100);
+		  HAL_UART_Transmit(&huart2, (uint8_t *)buffer, strlen(buffer), 100);
 
 		  sprintf(buffer, "%d percent humid\n", globalHumidity);
-		  HAL_UART_Transmit(&huart2, buffer, strlen(buffer), 100);
+		  HAL_UART_Transmit(&huart2, (uint8_t *)buffer, strlen(buffer), 100);
 
 		  sprintf(buffer, "%d millibar of pressure\n", globalPressure);
-		  HAL_UART_Transmit(&huart2, buffer, strlen(buffer), 100);
+		  HAL_UART_Transmit(&huart2, (uint8_t *)buffer, strlen(buffer), 100);
 
 		  sprintf(buffer, "%d metingsronde zijn klaar\n\n", counter);
-		  HAL_UART_Transmit(&huart2, buffer, strlen(buffer), 100);
+		  HAL_UART_Transmit(&huart2, (uint8_t *)buffer, strlen(buffer), 100);
 		  xSemaphoreGive(UART2BusMutexHandle);
 
 		  isHumidityDoneFlag = isPressureDone = isTemperatureDone = NOT_READY;
