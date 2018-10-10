@@ -175,7 +175,7 @@ int main(void)
   taskPressureHandle = osThreadCreate(osThread(taskPressure), NULL);
 
   /* definition and creation of taskSendDataWif */
-  osThreadDef(taskSendDataWif, startTaskWifi, osPriorityIdle, 0, 128);
+  osThreadDef(taskSendDataWif, startTaskWifi, osPriorityIdle, 0, 512);
   taskSendDataWifHandle = osThreadCreate(osThread(taskSendDataWif), NULL);
 
   /* USER CODE BEGIN RTOS_THREADS */
@@ -385,9 +385,6 @@ uint8_t isTemperatureDone = NOT_READY;
 uint8_t isHumidityDoneFlag = NOT_READY;
 /* USER CODE END 4 */
 
-//Global variables
-
-
 /* StartTaskTemperature function */
 void StartTaskTemperature(void const * argument)
 {
@@ -410,6 +407,7 @@ void StartTaskTemperature(void const * argument)
 /* startTaskHumidity function */
 void startTaskHumidity(void const * argument)
 {
+  /* USER CODE BEGIN startTaskHumidity */
 	uint8_t commandLoadHumidity = 0xE5;
 
 	uint8_t buffer[MAX_BUFFER_SIZE];
@@ -423,6 +421,7 @@ void startTaskHumidity(void const * argument)
 		isHumidityDoneFlag = READY;
 		vTaskSuspend(taskHumidityHandle);
 	}
+  /* USER CODE END startTaskHumidity */
 }
 
 /* startTaskPressure function */
