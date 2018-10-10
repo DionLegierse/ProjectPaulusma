@@ -8,8 +8,7 @@
 #ifndef WIFIFUNCTIONS_H_
 #define WIFIFUNCTIONS_H_
 #endif /* WIFIFUNCTIONS_H_ */
-
-#define MAX_WIFI_BUFFER_SIZE (uint32_t)512
+l
 #define STANDARD_WIFI_BUFFER_SIZE (uint32_t)80
 
 #include "main.h"

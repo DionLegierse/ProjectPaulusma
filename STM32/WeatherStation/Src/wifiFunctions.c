@@ -47,4 +47,3 @@ void send_data_to_server(int16_t temperature, uint16_t humidity, uint16_t pressu
 	send_data_to_esp(buffer);
 
 }
-
