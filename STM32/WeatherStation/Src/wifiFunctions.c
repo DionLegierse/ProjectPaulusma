@@ -56,7 +56,7 @@ void send_data_to_server(int16_t temperature, uint16_t humidity, uint16_t pressu
 	sprintf(buffer, "AT+CIPSTART=\"TCP\",\"%s\",%s\r\n",hostname,portNumber);
 	send_data_to_esp(buffer, "OK");
 
-	sprintf(contentLength, "Content-Length: %d\n", strlen(content));
+	sprintf(contentLength, "Content-Length: %d\n\n", strlen(content));
 
 	strcpy(buffer, postRequest);
 	strcat(buffer, contentLength);
