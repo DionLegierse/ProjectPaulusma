@@ -175,7 +175,7 @@ int main(void)
   taskPressureHandle = osThreadCreate(osThread(taskPressure), NULL);
 
   /* definition and creation of taskSendDataWif */
-  osThreadDef(taskSendDataWif, startTaskWifi, osPriorityIdle, 0, 128);
+  osThreadDef(taskSendDataWif, startTaskWifi, osPriorityIdle, 0, 512);
   taskSendDataWifHandle = osThreadCreate(osThread(taskSendDataWif), NULL);
 
   /* USER CODE BEGIN RTOS_THREADS */
@@ -384,9 +384,6 @@ uint8_t isPressureDone = NOT_READY;
 uint8_t isTemperatureDone = NOT_READY;
 uint8_t isHumidityDoneFlag = NOT_READY;
 /* USER CODE END 4 */
-
-//Global variables
-
 
 /* StartTaskTemperature function */
 void StartTaskTemperature(void const * argument)
