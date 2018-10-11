@@ -20,13 +20,14 @@ const char postRequest[] =
 					"Host: student.aii.avans.nl\n\n";*/
 
 void send_data_to_esp(uint8_t str[], uint8_t rsp[]){
+	char buffer[80];
+	memset(buffer,'\0',STANDARD_WIFI_BUFFER_SIZE);
 	//send data to the esp8266
 	HAL_UART_Transmit(&huart1, str, strlen(str), 100);
 	//wait for the response
 	do{
-		HAL_UART_Receive(&huart1, (uint8_t *)str, STANDARD_WIFI_BUFFER_SIZE, 100);
-	}while(!strstr(str,rsp) && rsp != NULL);
-	memset(str,'\0',STANDARD_WIFI_BUFFER_SIZE);
+		HAL_UART_Receive(&huart1, (uint8_t *)buffer, STANDARD_WIFI_BUFFER_SIZE, 100);
+	}while(!strstr(buffer,rsp) && rsp != NULL);
 }
 
 void initialize_wifi_connection(){
@@ -51,8 +52,6 @@ void send_data_to_server(int16_t temperature, uint16_t humidity, uint16_t pressu
 	char contentLength[HTTP_HEADER_LINE_LENGTH];
 	char content[HTTP_HEADER_LINE_LENGTH];
 	char atCommand[HTTP_HEADER_LINE_LENGTH];
-
-
 
 	sprintf(buffer, "AT+CIPSTART=\"TCP\",\"%s\",%s\r\n",hostname,portNumber);
 	send_data_to_esp(buffer, "OK");
