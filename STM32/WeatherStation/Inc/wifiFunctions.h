@@ -10,6 +10,8 @@
 #endif /* WIFIFUNCTIONS_H_ */
 
 #define STANDARD_WIFI_BUFFER_SIZE (uint32_t)80
+#define HTTP_HEADER_LINE_LENGTH (uint32_t)50
+#define HTTP_HEADER_BUFFER_SIZE (uint32_t)300
 
 #include "main.h"
 #include "stm32f0xx_hal.h"
