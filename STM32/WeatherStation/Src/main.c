@@ -445,6 +445,7 @@ void startTaskWifi(void const * argument)
 	char buffer[MAX_BUFFER_SIZE];
 	int counter = 0;
 
+	osDelay(WIFI_INIT_TIME);
 	initialize_wifi_connection();
 
   /* Infinite loop */
