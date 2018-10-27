@@ -13,6 +13,9 @@
 #include <QtSql/QSqlRecord>
 #include <QDebug>
 #include <QSqlTableModel>
+#include <QtCharts/QChartView>
+#include <QtCharts/QLineSeries>
+#include <QtCharts/QCategoryAxis>
 
 #define LOAD_ALL_MEASUMENTS_DAYS_TIMES "SELECT tbldateandtime.ID, "\
                                        "DATE_FORMAT(tbldateandtime.dateDate,\"%d-%m-%Y\") AS `Date`, "\
@@ -26,6 +29,30 @@
                                   "INNER JOIN tblvalue ON tbldateandtimevalue.ValueID = tblvalue.ID "\
                                   "WHERE tbldateandtime.ID = "
 
+#define FIND_ALL_DISTINCT_DATES "SELECT DISTINCT DATE_FORMAT(tbldateandtime.dateDate, \"%d-%m-%Y\") AS `date` "\
+                                "FROM tbldateandtime "\
+                                "ORDER BY `date` DESC"
+
+#define FIND_ALL_TEMPERATURE_ON_DAY "SELECT DATE_FORMAT(tbldateandtime.dateDate, \"%d-%m-%Y\") AS `date`, "\
+                                    "tbldateandtime.timeTime, FORMAT(tblvalue.intTemperature/ 10, 1) AS TEMP "\
+                                    "FROM tbldateandtime "\
+                                    "INNER JOIN tbldateandtimevalue ON tbldateandtime.ID = tbldateandtimevalue.TimeID "\
+                                    "INNER JOIN tblvalue ON tbldateandtimevalue.ValueID = tblvalue.ID "\
+                                    "HAVING `date` =\""
+
+#define FIND_ALL_HUMIDITY_ON_DAY "SELECT DATE_FORMAT(tbldateandtime.dateDate, \"%d-%m-%Y\") AS `date`, "\
+                                 "tbldateandtime.timeTime, FORMAT(tblvalue.intHumidity, 1) AS HUMIDITY "\
+                                 "FROM tbldateandtime "\
+                                 "INNER JOIN tbldateandtimevalue ON tbldateandtime.ID = tbldateandtimevalue.TimeID "\
+                                 "INNER JOIN tblvalue ON tbldateandtimevalue.ValueID = tblvalue.ID "\
+                                 "HAVING `date` =\""
+
+#define FIND_ALL_PRESSURE_ON_DAY "SELECT DATE_FORMAT(tbldateandtime.dateDate, \"%d-%m-%Y\") AS `date`, "\
+                                 "tbldateandtime.timeTime, FORMAT(tblvalue.intPressure, 1) AS PRESSURE "\
+                                 "FROM tbldateandtime "\
+                                 "INNER JOIN tbldateandtimevalue ON tbldateandtime.ID = tbldateandtimevalue.TimeID "\
+                                 "INNER JOIN tblvalue ON tbldateandtimevalue.ValueID = tblvalue.ID "\
+                                 "HAVING `date` =\""
 
 #define TEMPERATURE static_cast<int>(0)
 #define HUMIDITY static_cast<int>(1)
@@ -61,17 +88,29 @@ private slots:
 
     void on_rbFahrenheit_toggled(bool checked);
 
+    void on_pbGenerateChart_pressed();
+
 private:
     QSqlDatabase db;
-    Ui::MainWindow *ui;
-    QSqlQueryModel *queryModel;
+
     bool isTempCelsius = true; // false is for fahrenheit
     bool isAValueSelected = false;
 
     struct measurement currentSelectedMeasurement;
 
+
+    Ui::MainWindow *ui = nullptr;
+    QSqlQueryModel *queryModel = nullptr;
+    QtCharts::QLineSeries * measurementSeries = nullptr;
+    QtCharts::QChart * lineChart = nullptr;
+    QtCharts::QCategoryAxis * xAxis = nullptr;
+    QtCharts::QChartView * chartView = nullptr;
+
     void set_database();
     void update_text_boxes();
+    void init_tableview_date_time();
+    void init_cmbDates();
+    void fill_chart_values(QSqlQuery& query);
 };
 
 #endif // MAINWINDOW_H

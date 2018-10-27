@@ -224,6 +224,46 @@ release/moc_mainwindow.cpp: F:/Qt/5.11.1/mingw53_32/include/QtWidgets/QMainWindo
 		F:/Qt/5.11.1/mingw53_32/include/QtSql/qsqltablemodel.h \
 		F:/Qt/5.11.1/mingw53_32/include/QtSql/qsqlquerymodel.h \
 		F:/Qt/5.11.1/mingw53_32/include/QtCore/qabstractitemmodel.h \
+		F:/Qt/5.11.1/mingw53_32/include/QtCharts/QChartView \
+		F:/Qt/5.11.1/mingw53_32/include/QtCharts/qchartview.h \
+		F:/Qt/5.11.1/mingw53_32/include/QtCharts/QAbstractAxis \
+		F:/Qt/5.11.1/mingw53_32/include/QtCharts/qabstractaxis.h \
+		F:/Qt/5.11.1/mingw53_32/include/QtCharts/QChartGlobal \
+		F:/Qt/5.11.1/mingw53_32/include/QtCharts/qchartglobal.h \
+		F:/Qt/5.11.1/mingw53_32/include/QtCore/QtGlobal \
+		F:/Qt/5.11.1/mingw53_32/include/QtGui/QPen \
+		F:/Qt/5.11.1/mingw53_32/include/QtGui/qpen.h \
+		F:/Qt/5.11.1/mingw53_32/include/QtGui/QFont \
+		F:/Qt/5.11.1/mingw53_32/include/QtCore/QVariant \
+		F:/Qt/5.11.1/mingw53_32/include/QtCharts/QAbstractSeries \
+		F:/Qt/5.11.1/mingw53_32/include/QtCharts/qabstractseries.h \
+		F:/Qt/5.11.1/mingw53_32/include/QtCore/QObject \
+		F:/Qt/5.11.1/mingw53_32/include/QtCharts/QChart \
+		F:/Qt/5.11.1/mingw53_32/include/QtCharts/qchart.h \
+		F:/Qt/5.11.1/mingw53_32/include/QtCharts/QLegend \
+		F:/Qt/5.11.1/mingw53_32/include/QtCharts/qlegend.h \
+		F:/Qt/5.11.1/mingw53_32/include/QtWidgets/QGraphicsWidget \
+		F:/Qt/5.11.1/mingw53_32/include/QtWidgets/qgraphicswidget.h \
+		F:/Qt/5.11.1/mingw53_32/include/QtWidgets/qgraphicslayoutitem.h \
+		F:/Qt/5.11.1/mingw53_32/include/QtWidgets/qgraphicsitem.h \
+		F:/Qt/5.11.1/mingw53_32/include/QtGui/QBrush \
+		F:/Qt/5.11.1/mingw53_32/include/QtCore/QMargins \
+		F:/Qt/5.11.1/mingw53_32/include/QtWidgets/QGraphicsView \
+		F:/Qt/5.11.1/mingw53_32/include/QtWidgets/qgraphicsview.h \
+		F:/Qt/5.11.1/mingw53_32/include/QtGui/qpainter.h \
+		F:/Qt/5.11.1/mingw53_32/include/QtGui/qtextoption.h \
+		F:/Qt/5.11.1/mingw53_32/include/QtWidgets/qscrollarea.h \
+		F:/Qt/5.11.1/mingw53_32/include/QtWidgets/qabstractscrollarea.h \
+		F:/Qt/5.11.1/mingw53_32/include/QtWidgets/qframe.h \
+		F:/Qt/5.11.1/mingw53_32/include/QtWidgets/qgraphicsscene.h \
+		F:/Qt/5.11.1/mingw53_32/include/QtCharts/QLineSeries \
+		F:/Qt/5.11.1/mingw53_32/include/QtCharts/qlineseries.h \
+		F:/Qt/5.11.1/mingw53_32/include/QtCharts/QXYSeries \
+		F:/Qt/5.11.1/mingw53_32/include/QtCharts/qxyseries.h \
+		F:/Qt/5.11.1/mingw53_32/include/QtCharts/QCategoryAxis \
+		F:/Qt/5.11.1/mingw53_32/include/QtCharts/qcategoryaxis.h \
+		F:/Qt/5.11.1/mingw53_32/include/QtCharts/QValueAxis \
+		F:/Qt/5.11.1/mingw53_32/include/QtCharts/qvalueaxis.h \
 		../QtInterface/mainwindow.h \
 		release/moc_predefs.h \
 		F:/Qt/5.11.1/mingw53_32/bin/moc.exe
@@ -374,6 +414,46 @@ release/main.o: ../QtInterface/main.cpp ../QtInterface/mainwindow.h \
 		F:/Qt/5.11.1/mingw53_32/include/QtSql/qsqltablemodel.h \
 		F:/Qt/5.11.1/mingw53_32/include/QtSql/qsqlquerymodel.h \
 		F:/Qt/5.11.1/mingw53_32/include/QtCore/qabstractitemmodel.h \
+		F:/Qt/5.11.1/mingw53_32/include/QtCharts/QChartView \
+		F:/Qt/5.11.1/mingw53_32/include/QtCharts/qchartview.h \
+		F:/Qt/5.11.1/mingw53_32/include/QtCharts/QAbstractAxis \
+		F:/Qt/5.11.1/mingw53_32/include/QtCharts/qabstractaxis.h \
+		F:/Qt/5.11.1/mingw53_32/include/QtCharts/QChartGlobal \
+		F:/Qt/5.11.1/mingw53_32/include/QtCharts/qchartglobal.h \
+		F:/Qt/5.11.1/mingw53_32/include/QtCore/QtGlobal \
+		F:/Qt/5.11.1/mingw53_32/include/QtGui/QPen \
+		F:/Qt/5.11.1/mingw53_32/include/QtGui/qpen.h \
+		F:/Qt/5.11.1/mingw53_32/include/QtGui/QFont \
+		F:/Qt/5.11.1/mingw53_32/include/QtCore/QVariant \
+		F:/Qt/5.11.1/mingw53_32/include/QtCharts/QAbstractSeries \
+		F:/Qt/5.11.1/mingw53_32/include/QtCharts/qabstractseries.h \
+		F:/Qt/5.11.1/mingw53_32/include/QtCore/QObject \
+		F:/Qt/5.11.1/mingw53_32/include/QtCharts/QChart \
+		F:/Qt/5.11.1/mingw53_32/include/QtCharts/qchart.h \
+		F:/Qt/5.11.1/mingw53_32/include/QtCharts/QLegend \
+		F:/Qt/5.11.1/mingw53_32/include/QtCharts/qlegend.h \
+		F:/Qt/5.11.1/mingw53_32/include/QtWidgets/QGraphicsWidget \
+		F:/Qt/5.11.1/mingw53_32/include/QtWidgets/qgraphicswidget.h \
+		F:/Qt/5.11.1/mingw53_32/include/QtWidgets/qgraphicslayoutitem.h \
+		F:/Qt/5.11.1/mingw53_32/include/QtWidgets/qgraphicsitem.h \
+		F:/Qt/5.11.1/mingw53_32/include/QtGui/QBrush \
+		F:/Qt/5.11.1/mingw53_32/include/QtCore/QMargins \
+		F:/Qt/5.11.1/mingw53_32/include/QtWidgets/QGraphicsView \
+		F:/Qt/5.11.1/mingw53_32/include/QtWidgets/qgraphicsview.h \
+		F:/Qt/5.11.1/mingw53_32/include/QtGui/qpainter.h \
+		F:/Qt/5.11.1/mingw53_32/include/QtGui/qtextoption.h \
+		F:/Qt/5.11.1/mingw53_32/include/QtWidgets/qscrollarea.h \
+		F:/Qt/5.11.1/mingw53_32/include/QtWidgets/qabstractscrollarea.h \
+		F:/Qt/5.11.1/mingw53_32/include/QtWidgets/qframe.h \
+		F:/Qt/5.11.1/mingw53_32/include/QtWidgets/qgraphicsscene.h \
+		F:/Qt/5.11.1/mingw53_32/include/QtCharts/QLineSeries \
+		F:/Qt/5.11.1/mingw53_32/include/QtCharts/qlineseries.h \
+		F:/Qt/5.11.1/mingw53_32/include/QtCharts/QXYSeries \
+		F:/Qt/5.11.1/mingw53_32/include/QtCharts/qxyseries.h \
+		F:/Qt/5.11.1/mingw53_32/include/QtCharts/QCategoryAxis \
+		F:/Qt/5.11.1/mingw53_32/include/QtCharts/qcategoryaxis.h \
+		F:/Qt/5.11.1/mingw53_32/include/QtCharts/QValueAxis \
+		F:/Qt/5.11.1/mingw53_32/include/QtCharts/qvalueaxis.h \
 		F:/Qt/5.11.1/mingw53_32/include/QtWidgets/QApplication \
 		F:/Qt/5.11.1/mingw53_32/include/QtWidgets/qapplication.h \
 		F:/Qt/5.11.1/mingw53_32/include/QtCore/qcoreapplication.h \
@@ -505,8 +585,47 @@ release/mainwindow.o: ../QtInterface/mainwindow.cpp ../QtInterface/mainwindow.h 
 		F:/Qt/5.11.1/mingw53_32/include/QtSql/qsqltablemodel.h \
 		F:/Qt/5.11.1/mingw53_32/include/QtSql/qsqlquerymodel.h \
 		F:/Qt/5.11.1/mingw53_32/include/QtCore/qabstractitemmodel.h \
-		ui_mainwindow.h \
+		F:/Qt/5.11.1/mingw53_32/include/QtCharts/QChartView \
+		F:/Qt/5.11.1/mingw53_32/include/QtCharts/qchartview.h \
+		F:/Qt/5.11.1/mingw53_32/include/QtCharts/QAbstractAxis \
+		F:/Qt/5.11.1/mingw53_32/include/QtCharts/qabstractaxis.h \
+		F:/Qt/5.11.1/mingw53_32/include/QtCharts/QChartGlobal \
+		F:/Qt/5.11.1/mingw53_32/include/QtCharts/qchartglobal.h \
+		F:/Qt/5.11.1/mingw53_32/include/QtCore/QtGlobal \
+		F:/Qt/5.11.1/mingw53_32/include/QtGui/QPen \
+		F:/Qt/5.11.1/mingw53_32/include/QtGui/qpen.h \
+		F:/Qt/5.11.1/mingw53_32/include/QtGui/QFont \
 		F:/Qt/5.11.1/mingw53_32/include/QtCore/QVariant \
+		F:/Qt/5.11.1/mingw53_32/include/QtCharts/QAbstractSeries \
+		F:/Qt/5.11.1/mingw53_32/include/QtCharts/qabstractseries.h \
+		F:/Qt/5.11.1/mingw53_32/include/QtCore/QObject \
+		F:/Qt/5.11.1/mingw53_32/include/QtCharts/QChart \
+		F:/Qt/5.11.1/mingw53_32/include/QtCharts/qchart.h \
+		F:/Qt/5.11.1/mingw53_32/include/QtCharts/QLegend \
+		F:/Qt/5.11.1/mingw53_32/include/QtCharts/qlegend.h \
+		F:/Qt/5.11.1/mingw53_32/include/QtWidgets/QGraphicsWidget \
+		F:/Qt/5.11.1/mingw53_32/include/QtWidgets/qgraphicswidget.h \
+		F:/Qt/5.11.1/mingw53_32/include/QtWidgets/qgraphicslayoutitem.h \
+		F:/Qt/5.11.1/mingw53_32/include/QtWidgets/qgraphicsitem.h \
+		F:/Qt/5.11.1/mingw53_32/include/QtGui/QBrush \
+		F:/Qt/5.11.1/mingw53_32/include/QtCore/QMargins \
+		F:/Qt/5.11.1/mingw53_32/include/QtWidgets/QGraphicsView \
+		F:/Qt/5.11.1/mingw53_32/include/QtWidgets/qgraphicsview.h \
+		F:/Qt/5.11.1/mingw53_32/include/QtGui/qpainter.h \
+		F:/Qt/5.11.1/mingw53_32/include/QtGui/qtextoption.h \
+		F:/Qt/5.11.1/mingw53_32/include/QtWidgets/qscrollarea.h \
+		F:/Qt/5.11.1/mingw53_32/include/QtWidgets/qabstractscrollarea.h \
+		F:/Qt/5.11.1/mingw53_32/include/QtWidgets/qframe.h \
+		F:/Qt/5.11.1/mingw53_32/include/QtWidgets/qgraphicsscene.h \
+		F:/Qt/5.11.1/mingw53_32/include/QtCharts/QLineSeries \
+		F:/Qt/5.11.1/mingw53_32/include/QtCharts/qlineseries.h \
+		F:/Qt/5.11.1/mingw53_32/include/QtCharts/QXYSeries \
+		F:/Qt/5.11.1/mingw53_32/include/QtCharts/qxyseries.h \
+		F:/Qt/5.11.1/mingw53_32/include/QtCharts/QCategoryAxis \
+		F:/Qt/5.11.1/mingw53_32/include/QtCharts/qcategoryaxis.h \
+		F:/Qt/5.11.1/mingw53_32/include/QtCharts/QValueAxis \
+		F:/Qt/5.11.1/mingw53_32/include/QtCharts/qvalueaxis.h \
+		ui_mainwindow.h \
 		F:/Qt/5.11.1/mingw53_32/include/QtWidgets/QApplication \
 		F:/Qt/5.11.1/mingw53_32/include/QtWidgets/qapplication.h \
 		F:/Qt/5.11.1/mingw53_32/include/QtCore/qcoreapplication.h \
@@ -514,12 +633,8 @@ release/mainwindow.o: ../QtInterface/mainwindow.cpp ../QtInterface/mainwindow.h 
 		F:/Qt/5.11.1/mingw53_32/include/QtWidgets/qdesktopwidget.h \
 		F:/Qt/5.11.1/mingw53_32/include/QtGui/qguiapplication.h \
 		F:/Qt/5.11.1/mingw53_32/include/QtGui/qinputmethod.h \
-		F:/Qt/5.11.1/mingw53_32/include/QtWidgets/QHeaderView \
-		F:/Qt/5.11.1/mingw53_32/include/QtWidgets/qheaderview.h \
-		F:/Qt/5.11.1/mingw53_32/include/QtWidgets/qabstractitemview.h \
-		F:/Qt/5.11.1/mingw53_32/include/QtWidgets/qabstractscrollarea.h \
-		F:/Qt/5.11.1/mingw53_32/include/QtWidgets/qframe.h \
-		F:/Qt/5.11.1/mingw53_32/include/QtCore/qitemselectionmodel.h \
+		F:/Qt/5.11.1/mingw53_32/include/QtWidgets/QComboBox \
+		F:/Qt/5.11.1/mingw53_32/include/QtWidgets/qcombobox.h \
 		F:/Qt/5.11.1/mingw53_32/include/QtWidgets/qabstractitemdelegate.h \
 		F:/Qt/5.11.1/mingw53_32/include/QtWidgets/qstyleoption.h \
 		F:/Qt/5.11.1/mingw53_32/include/QtWidgets/qabstractspinbox.h \
@@ -530,29 +645,28 @@ release/mainwindow.o: ../QtInterface/mainwindow.cpp ../QtInterface/mainwindow.h 
 		F:/Qt/5.11.1/mingw53_32/include/QtWidgets/qstyle.h \
 		F:/Qt/5.11.1/mingw53_32/include/QtWidgets/qtabbar.h \
 		F:/Qt/5.11.1/mingw53_32/include/QtWidgets/qrubberband.h \
-		F:/Qt/5.11.1/mingw53_32/include/QtWidgets/QLCDNumber \
-		F:/Qt/5.11.1/mingw53_32/include/QtWidgets/qlcdnumber.h \
+		F:/Qt/5.11.1/mingw53_32/include/QtWidgets/QGridLayout \
+		F:/Qt/5.11.1/mingw53_32/include/QtWidgets/qgridlayout.h \
+		F:/Qt/5.11.1/mingw53_32/include/QtWidgets/qlayout.h \
+		F:/Qt/5.11.1/mingw53_32/include/QtWidgets/qlayoutitem.h \
+		F:/Qt/5.11.1/mingw53_32/include/QtWidgets/qboxlayout.h \
+		F:/Qt/5.11.1/mingw53_32/include/QtWidgets/QHBoxLayout \
+		F:/Qt/5.11.1/mingw53_32/include/QtWidgets/QHeaderView \
+		F:/Qt/5.11.1/mingw53_32/include/QtWidgets/qheaderview.h \
+		F:/Qt/5.11.1/mingw53_32/include/QtWidgets/qabstractitemview.h \
+		F:/Qt/5.11.1/mingw53_32/include/QtCore/qitemselectionmodel.h \
+		F:/Qt/5.11.1/mingw53_32/include/QtWidgets/QLabel \
+		F:/Qt/5.11.1/mingw53_32/include/QtWidgets/qlabel.h \
 		F:/Qt/5.11.1/mingw53_32/include/QtWidgets/QMenuBar \
 		F:/Qt/5.11.1/mingw53_32/include/QtWidgets/qmenubar.h \
 		F:/Qt/5.11.1/mingw53_32/include/QtWidgets/qmenu.h \
 		F:/Qt/5.11.1/mingw53_32/include/QtWidgets/qaction.h \
 		F:/Qt/5.11.1/mingw53_32/include/QtWidgets/qactiongroup.h \
-		F:/Qt/5.11.1/mingw53_32/include/QtWidgets/QPlainTextEdit \
-		F:/Qt/5.11.1/mingw53_32/include/QtWidgets/qplaintextedit.h \
-		F:/Qt/5.11.1/mingw53_32/include/QtWidgets/qtextedit.h \
-		F:/Qt/5.11.1/mingw53_32/include/QtGui/qtextdocument.h \
-		F:/Qt/5.11.1/mingw53_32/include/QtGui/qtextoption.h \
-		F:/Qt/5.11.1/mingw53_32/include/QtGui/qtextcursor.h \
-		F:/Qt/5.11.1/mingw53_32/include/QtGui/qtextformat.h \
-		F:/Qt/5.11.1/mingw53_32/include/QtGui/qpen.h \
-		F:/Qt/5.11.1/mingw53_32/include/QtGui/qabstracttextdocumentlayout.h \
-		F:/Qt/5.11.1/mingw53_32/include/QtGui/qtextlayout.h \
-		F:/Qt/5.11.1/mingw53_32/include/QtGui/qglyphrun.h \
-		F:/Qt/5.11.1/mingw53_32/include/QtGui/qrawfont.h \
-		F:/Qt/5.11.1/mingw53_32/include/QtGui/qfontdatabase.h \
+		F:/Qt/5.11.1/mingw53_32/include/QtWidgets/QPushButton \
+		F:/Qt/5.11.1/mingw53_32/include/QtWidgets/qpushbutton.h \
+		F:/Qt/5.11.1/mingw53_32/include/QtWidgets/qabstractbutton.h \
 		F:/Qt/5.11.1/mingw53_32/include/QtWidgets/QRadioButton \
 		F:/Qt/5.11.1/mingw53_32/include/QtWidgets/qradiobutton.h \
-		F:/Qt/5.11.1/mingw53_32/include/QtWidgets/qabstractbutton.h \
 		F:/Qt/5.11.1/mingw53_32/include/QtWidgets/QStatusBar \
 		F:/Qt/5.11.1/mingw53_32/include/QtWidgets/qstatusbar.h \
 		F:/Qt/5.11.1/mingw53_32/include/QtWidgets/QTableView \
@@ -595,7 +709,6 @@ release/mainwindow.o: ../QtInterface/mainwindow.cpp ../QtInterface/mainwindow.h 
 		F:/Qt/5.11.1/mingw53_32/include/QtCore/qexception.h \
 		F:/Qt/5.11.1/mingw53_32/include/QtCore/qfactoryinterface.h \
 		F:/Qt/5.11.1/mingw53_32/include/QtCore/qfileselector.h \
-		F:/Qt/5.11.1/mingw53_32/include/QtCore/QObject \
 		F:/Qt/5.11.1/mingw53_32/include/QtCore/QStringList \
 		F:/Qt/5.11.1/mingw53_32/include/QtCore/qfilesystemwatcher.h \
 		F:/Qt/5.11.1/mingw53_32/include/QtCore/qfinalstate.h \
@@ -679,7 +792,6 @@ release/mainwindow.o: ../QtInterface/mainwindow.cpp ../QtInterface/mainwindow.h 
 		F:/Qt/5.11.1/mingw53_32/include/QtSql/qsqlrelationaldelegate.h \
 		F:/Qt/5.11.1/mingw53_32/include/QtWidgets/qitemdelegate.h \
 		F:/Qt/5.11.1/mingw53_32/include/QtWidgets/qlistview.h \
-		F:/Qt/5.11.1/mingw53_32/include/QtWidgets/qcombobox.h \
 		F:/Qt/5.11.1/mingw53_32/include/QtSql/qsqlrelationaltablemodel.h \
 		F:/Qt/5.11.1/mingw53_32/include/QtSql/qsqlresult.h \
 		F:/Qt/5.11.1/mingw53_32/include/QtSql/qtsqlversion.h \

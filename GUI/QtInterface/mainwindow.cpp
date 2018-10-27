@@ -6,6 +6,40 @@
 #include <QSqlTableModel>
 #include <QString>
 
+void MainWindow::init_tableview_date_time(){
+    if(db.open()){
+        qDebug() << "DB connected";
+
+        this->queryModel = new QSqlQueryModel(); //Create new Model
+
+        this->queryModel->clear(); //Clear the data in the modType
+        this->queryModel->setQuery(LOAD_ALL_MEASUMENTS_DAYS_TIMES); //Set the new query in the modType
+        this->ui->tvDatesTimes->setModel(this->queryModel);
+        this->ui->tvDatesTimes->hideColumn(0);
+        this->ui->tvDatesTimes->resizeColumnsToContents();
+
+
+    }else{
+        QSqlError err = db.lastError(); //If error occurred, then print Error.
+        qDebug() << "Database:  " << err.databaseText();
+        qDebug() << "Driver:  " << err.driverText();
+        qDebug() << "Text:  " << err.text();
+    }
+}
+
+void MainWindow::init_cmbDates(){
+    this->ui->cmbDays->addItem("(select day)");
+
+    QSqlQuery cmbQuery(FIND_ALL_DISTINCT_DATES);
+    cmbQuery.exec();
+
+    cmbQuery.first();
+
+    do{
+        this->ui->cmbDays->addItem(cmbQuery.value(0).toString());
+    }while(cmbQuery.next());
+}
+
 void MainWindow::set_database(){
     // Connection with database
     this->db = QSqlDatabase::addDatabase("QMYSQL");
@@ -25,31 +59,21 @@ MainWindow::MainWindow(QWidget *parent) :
     //setup the connection with the database
     this->set_database();
 
-    if(db.open()){
-        qDebug() << "DB connected";
+    //fill the table view with the dates and times for the database
+    this->init_tableview_date_time();
 
-        this->queryModel = new QSqlQueryModel(); //Create new Model
+    this->init_cmbDates();
 
-        this->queryModel->clear(); //Clear the data in the modType
-        this->queryModel->setQuery(LOAD_ALL_MEASUMENTS_DAYS_TIMES); //Set the new query in the modType
-        ui->tvDatesTimes->setModel(this->queryModel);
-        ui->tvDatesTimes->hideColumn(0);
-        ui->tvDatesTimes->resizeColumnsToContents();
-
-
-    }else{
-        QSqlError err = db.lastError(); //If error occurred, then print Error.
-        qDebug() << "Database:  " << err.databaseText();
-        qDebug() << "Driver:  " << err.driverText();
-        qDebug() << "Text:  " << err.text();
-    }
+    this->lineChart = new QtCharts::QChart;
+    this->measurementSeries = new QtCharts::QLineSeries;
+    this->xAxis = new QtCharts::QCategoryAxis;
+    this->chartView = new QtCharts::QChartView;
 }
 
 MainWindow::~MainWindow()
 {
     delete ui;
     delete this->queryModel;
-
 }
 
 void MainWindow::update_text_boxes()
@@ -126,3 +150,54 @@ void MainWindow::on_rbFahrenheit_toggled(bool checked)
             this->update_text_boxes();
     }
 }
+
+void MainWindow::fill_chart_values(QSqlQuery& query){
+    query.first();
+    this->measurementSeries->clear();
+    qreal i = 0;
+    do{
+        this->measurementSeries->append(i,query.value(2).toDouble());
+        //this->xAxis->append(query.value(1).toString(),i);
+        i++;
+    }while(query.next());
+
+    this->lineChart->addSeries(this->measurementSeries);
+    this->lineChart->createDefaultAxes();
+    //this->lineChart->setAxisX(this->xAxis, this->measurementSeries);
+    this->lineChart->legend()->hide();
+
+    // Change the line color and weight
+    QPen pen(QRgb(0x000000));
+    pen.setWidth(1);
+    this->measurementSeries->setPen(pen);
+
+    this->chartView->setChart(this->lineChart);
+    this->chartView->setRenderHint(QPainter::Antialiasing);
+    this->ui->chartGrid->addWidget(this->chartView);
+}
+
+void MainWindow::on_pbGenerateChart_pressed()
+{
+    QSqlQuery getMeasurementQuery;
+    if(this->ui->cmbDays->currentText() != "(select day)"){
+        if(this->ui->rbTemperature->isChecked()){
+            getMeasurementQuery.prepare(FIND_ALL_TEMPERATURE_ON_DAY + ui->cmbDays->currentText() + "\"");
+            getMeasurementQuery.exec();
+            this->fill_chart_values(getMeasurementQuery);
+        }
+    }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+

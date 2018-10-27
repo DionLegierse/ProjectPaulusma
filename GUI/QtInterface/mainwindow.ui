@@ -6,12 +6,12 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>486</width>
-    <height>383</height>
+    <width>936</width>
+    <height>359</height>
    </rect>
   </property>
   <property name="windowTitle">
-   <string>MainWindow</string>
+   <string>Baulusma weather app</string>
   </property>
   <widget class="QWidget" name="centralWidget">
    <widget class="QTableView" name="tvDatesTimes">
@@ -19,21 +19,21 @@
      <rect>
       <x>9</x>
       <y>9</y>
-      <width>231</width>
-      <height>311</height>
+      <width>181</width>
+      <height>291</height>
      </rect>
     </property>
    </widget>
    <widget class="QWidget" name="gridLayoutWidget">
     <property name="geometry">
      <rect>
-      <x>250</x>
+      <x>200</x>
       <y>10</y>
       <width>211</width>
-      <height>111</height>
+      <height>141</height>
      </rect>
     </property>
-    <layout class="QGridLayout" name="gridLayout">
+    <layout class="QGridLayout" name="gridMeasurementInfo">
      <item row="3" column="0">
       <widget class="QLabel" name="lblTemperature">
        <property name="text">
@@ -62,36 +62,89 @@
        </property>
       </widget>
      </item>
+     <item row="6" column="0">
+      <layout class="QHBoxLayout" name="degreeRadioGrid">
+       <item>
+        <widget class="QRadioButton" name="rbCelsius">
+         <property name="text">
+          <string>Celsius</string>
+         </property>
+         <property name="checked">
+          <bool>true</bool>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QRadioButton" name="rbFahrenheit">
+         <property name="text">
+          <string>Fahrenheit</string>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </item>
     </layout>
    </widget>
-   <widget class="QWidget" name="horizontalLayoutWidget">
+   <widget class="QWidget" name="gridLayoutWidget_2">
     <property name="geometry">
      <rect>
-      <x>250</x>
-      <y>140</y>
+      <x>200</x>
+      <y>150</y>
       <width>211</width>
-      <height>31</height>
+      <height>151</height>
      </rect>
     </property>
-    <layout class="QHBoxLayout" name="degreeRadioGrid">
-     <item>
-      <widget class="QRadioButton" name="rbCelsius">
+    <layout class="QGridLayout" name="chartOptionsGrid">
+     <item row="4" column="0">
+      <widget class="QComboBox" name="cmbDays"/>
+     </item>
+     <item row="5" column="0">
+      <widget class="QPushButton" name="pbGenerateChart">
        <property name="text">
-        <string>Celsius</string>
-       </property>
-       <property name="checked">
-        <bool>true</bool>
+        <string>Generate linechart</string>
        </property>
       </widget>
      </item>
-     <item>
-      <widget class="QRadioButton" name="rbFahrenheit">
+     <item row="0" column="0">
+      <widget class="QLabel" name="lblChartOptions">
        <property name="text">
-        <string>Fahrenheit</string>
+        <string>Chart options:</string>
+       </property>
+      </widget>
+     </item>
+     <item row="1" column="0">
+      <widget class="QRadioButton" name="rbTemperature">
+       <property name="text">
+        <string>Temperature</string>
+       </property>
+      </widget>
+     </item>
+     <item row="2" column="0">
+      <widget class="QRadioButton" name="rbHumidity">
+       <property name="text">
+        <string>Humidity</string>
+       </property>
+      </widget>
+     </item>
+     <item row="3" column="0">
+      <widget class="QRadioButton" name="rbPressure">
+       <property name="text">
+        <string>Pressure</string>
        </property>
       </widget>
      </item>
     </layout>
+   </widget>
+   <widget class="QWidget" name="gridLayoutWidget_3">
+    <property name="geometry">
+     <rect>
+      <x>420</x>
+      <y>10</y>
+      <width>511</width>
+      <height>291</height>
+     </rect>
+    </property>
+    <layout class="QGridLayout" name="chartGrid"/>
    </widget>
   </widget>
   <widget class="QMenuBar" name="menuBar">
@@ -99,7 +152,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>486</width>
+     <width>936</width>
      <height>21</height>
     </rect>
    </property>
