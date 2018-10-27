@@ -21,8 +21,8 @@ QT_BEGIN_MOC_NAMESPACE
 QT_WARNING_PUSH
 QT_WARNING_DISABLE_DEPRECATED
 struct qt_meta_stringdata_MainWindow_t {
-    QByteArrayData data[7];
-    char stringdata0[87];
+    QByteArrayData data[8];
+    char stringdata0[107];
 };
 #define QT_MOC_LITERAL(idx, ofs, len) \
     Q_STATIC_BYTE_ARRAY_DATA_HEADER_INITIALIZER_WITH_OFFSET(len, \
@@ -32,16 +32,18 @@ struct qt_meta_stringdata_MainWindow_t {
 static const qt_meta_stringdata_MainWindow_t qt_meta_stringdata_MainWindow = {
     {
 QT_MOC_LITERAL(0, 0, 10), // "MainWindow"
-QT_MOC_LITERAL(1, 11, 15), // "on_Date_clicked"
-QT_MOC_LITERAL(2, 27, 0), // ""
-QT_MOC_LITERAL(3, 28, 11), // "QModelIndex"
-QT_MOC_LITERAL(4, 40, 5), // "index"
-QT_MOC_LITERAL(5, 46, 18), // "on_Degrees_clicked"
-QT_MOC_LITERAL(6, 65, 21) // "on_Fahrenheit_clicked"
+QT_MOC_LITERAL(1, 11, 23), // "on_tvDatesTimes_clicked"
+QT_MOC_LITERAL(2, 35, 0), // ""
+QT_MOC_LITERAL(3, 36, 11), // "QModelIndex"
+QT_MOC_LITERAL(4, 48, 5), // "index"
+QT_MOC_LITERAL(5, 54, 20), // "on_rbCelsius_toggled"
+QT_MOC_LITERAL(6, 75, 7), // "checked"
+QT_MOC_LITERAL(7, 83, 23) // "on_rbFahrenheit_toggled"
 
     },
-    "MainWindow\0on_Date_clicked\0\0QModelIndex\0"
-    "index\0on_Degrees_clicked\0on_Fahrenheit_clicked"
+    "MainWindow\0on_tvDatesTimes_clicked\0\0"
+    "QModelIndex\0index\0on_rbCelsius_toggled\0"
+    "checked\0on_rbFahrenheit_toggled"
 };
 #undef QT_MOC_LITERAL
 
@@ -60,13 +62,13 @@ static const uint qt_meta_data_MainWindow[] = {
 
  // slots: name, argc, parameters, tag, flags
        1,    1,   29,    2, 0x08 /* Private */,
-       5,    0,   32,    2, 0x08 /* Private */,
-       6,    0,   33,    2, 0x08 /* Private */,
+       5,    1,   32,    2, 0x08 /* Private */,
+       7,    1,   35,    2, 0x08 /* Private */,
 
  // slots: parameters
     QMetaType::Void, 0x80000000 | 3,    4,
-    QMetaType::Void,
-    QMetaType::Void,
+    QMetaType::Void, QMetaType::Bool,    6,
+    QMetaType::Void, QMetaType::Bool,    6,
 
        0        // eod
 };
@@ -77,9 +79,9 @@ void MainWindow::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, 
         MainWindow *_t = static_cast<MainWindow *>(_o);
         Q_UNUSED(_t)
         switch (_id) {
-        case 0: _t->on_Date_clicked((*reinterpret_cast< const QModelIndex(*)>(_a[1]))); break;
-        case 1: _t->on_Degrees_clicked(); break;
-        case 2: _t->on_Fahrenheit_clicked(); break;
+        case 0: _t->on_tvDatesTimes_clicked((*reinterpret_cast< const QModelIndex(*)>(_a[1]))); break;
+        case 1: _t->on_rbCelsius_toggled((*reinterpret_cast< bool(*)>(_a[1]))); break;
+        case 2: _t->on_rbFahrenheit_toggled((*reinterpret_cast< bool(*)>(_a[1]))); break;
         default: ;
         }
     }

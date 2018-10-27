@@ -11,11 +11,12 @@
 
 #include <QtCore/QVariant>
 #include <QtWidgets/QApplication>
+#include <QtWidgets/QGridLayout>
+#include <QtWidgets/QHBoxLayout>
 #include <QtWidgets/QHeaderView>
-#include <QtWidgets/QLCDNumber>
+#include <QtWidgets/QLabel>
 #include <QtWidgets/QMainWindow>
 #include <QtWidgets/QMenuBar>
-#include <QtWidgets/QPlainTextEdit>
 #include <QtWidgets/QRadioButton>
 #include <QtWidgets/QStatusBar>
 #include <QtWidgets/QTableView>
@@ -28,15 +29,17 @@ class Ui_MainWindow
 {
 public:
     QWidget *centralWidget;
-    QTableView *Date;
-    QLCDNumber *lcdAirPressure;
-    QLCDNumber *lcdTemperature;
-    QPlainTextEdit *plainTextEdit_3;
-    QPlainTextEdit *plainTextEdit;
-    QPlainTextEdit *plainTextEdit_2;
-    QLCDNumber *lcdAirHumidity;
-    QRadioButton *Degrees;
-    QRadioButton *Fahrenheit;
+    QTableView *tvDatesTimes;
+    QWidget *gridLayoutWidget;
+    QGridLayout *gridLayout;
+    QLabel *lblTemperature;
+    QLabel *lblPressure;
+    QLabel *lblHumidity;
+    QLabel *lblDateTime;
+    QWidget *horizontalLayoutWidget;
+    QHBoxLayout *degreeRadioGrid;
+    QRadioButton *rbCelsius;
+    QRadioButton *rbFahrenheit;
     QMenuBar *menuBar;
     QToolBar *mainToolBar;
     QStatusBar *statusBar;
@@ -45,47 +48,63 @@ public:
     {
         if (MainWindow->objectName().isEmpty())
             MainWindow->setObjectName(QStringLiteral("MainWindow"));
-        MainWindow->resize(1099, 861);
+        MainWindow->resize(486, 383);
         centralWidget = new QWidget(MainWindow);
         centralWidget->setObjectName(QStringLiteral("centralWidget"));
-        Date = new QTableView(centralWidget);
-        Date->setObjectName(QStringLiteral("Date"));
-        Date->setGeometry(QRect(9, 9, 431, 841));
-        lcdAirPressure = new QLCDNumber(centralWidget);
-        lcdAirPressure->setObjectName(QStringLiteral("lcdAirPressure"));
-        lcdAirPressure->setGeometry(QRect(670, 130, 81, 41));
-        lcdAirPressure->setFrameShape(QFrame::Box);
-        lcdAirPressure->setProperty("value", QVariant(0));
-        lcdTemperature = new QLCDNumber(centralWidget);
-        lcdTemperature->setObjectName(QStringLiteral("lcdTemperature"));
-        lcdTemperature->setGeometry(QRect(670, 10, 81, 41));
-        lcdTemperature->setFrameShape(QFrame::Box);
-        lcdTemperature->setProperty("value", QVariant(0));
-        plainTextEdit_3 = new QPlainTextEdit(centralWidget);
-        plainTextEdit_3->setObjectName(QStringLiteral("plainTextEdit_3"));
-        plainTextEdit_3->setGeometry(QRect(460, 130, 211, 41));
-        plainTextEdit = new QPlainTextEdit(centralWidget);
-        plainTextEdit->setObjectName(QStringLiteral("plainTextEdit"));
-        plainTextEdit->setGeometry(QRect(460, 10, 211, 41));
-        plainTextEdit_2 = new QPlainTextEdit(centralWidget);
-        plainTextEdit_2->setObjectName(QStringLiteral("plainTextEdit_2"));
-        plainTextEdit_2->setGeometry(QRect(460, 70, 211, 41));
-        lcdAirHumidity = new QLCDNumber(centralWidget);
-        lcdAirHumidity->setObjectName(QStringLiteral("lcdAirHumidity"));
-        lcdAirHumidity->setGeometry(QRect(670, 70, 81, 41));
-        lcdAirHumidity->setFrameShape(QFrame::Box);
-        lcdAirHumidity->setProperty("value", QVariant(0));
-        Degrees = new QRadioButton(centralWidget);
-        Degrees->setObjectName(QStringLiteral("Degrees"));
-        Degrees->setGeometry(QRect(770, 20, 141, 20));
-        Degrees->setChecked(true);
-        Fahrenheit = new QRadioButton(centralWidget);
-        Fahrenheit->setObjectName(QStringLiteral("Fahrenheit"));
-        Fahrenheit->setGeometry(QRect(880, 20, 151, 20));
+        tvDatesTimes = new QTableView(centralWidget);
+        tvDatesTimes->setObjectName(QStringLiteral("tvDatesTimes"));
+        tvDatesTimes->setGeometry(QRect(9, 9, 231, 311));
+        gridLayoutWidget = new QWidget(centralWidget);
+        gridLayoutWidget->setObjectName(QStringLiteral("gridLayoutWidget"));
+        gridLayoutWidget->setGeometry(QRect(250, 10, 211, 111));
+        gridLayout = new QGridLayout(gridLayoutWidget);
+        gridLayout->setSpacing(6);
+        gridLayout->setContentsMargins(11, 11, 11, 11);
+        gridLayout->setObjectName(QStringLiteral("gridLayout"));
+        gridLayout->setContentsMargins(0, 0, 0, 0);
+        lblTemperature = new QLabel(gridLayoutWidget);
+        lblTemperature->setObjectName(QStringLiteral("lblTemperature"));
+
+        gridLayout->addWidget(lblTemperature, 3, 0, 1, 1);
+
+        lblPressure = new QLabel(gridLayoutWidget);
+        lblPressure->setObjectName(QStringLiteral("lblPressure"));
+
+        gridLayout->addWidget(lblPressure, 5, 0, 1, 1);
+
+        lblHumidity = new QLabel(gridLayoutWidget);
+        lblHumidity->setObjectName(QStringLiteral("lblHumidity"));
+
+        gridLayout->addWidget(lblHumidity, 4, 0, 1, 1);
+
+        lblDateTime = new QLabel(gridLayoutWidget);
+        lblDateTime->setObjectName(QStringLiteral("lblDateTime"));
+
+        gridLayout->addWidget(lblDateTime, 2, 0, 1, 1);
+
+        horizontalLayoutWidget = new QWidget(centralWidget);
+        horizontalLayoutWidget->setObjectName(QStringLiteral("horizontalLayoutWidget"));
+        horizontalLayoutWidget->setGeometry(QRect(250, 140, 211, 31));
+        degreeRadioGrid = new QHBoxLayout(horizontalLayoutWidget);
+        degreeRadioGrid->setSpacing(6);
+        degreeRadioGrid->setContentsMargins(11, 11, 11, 11);
+        degreeRadioGrid->setObjectName(QStringLiteral("degreeRadioGrid"));
+        degreeRadioGrid->setContentsMargins(0, 0, 0, 0);
+        rbCelsius = new QRadioButton(horizontalLayoutWidget);
+        rbCelsius->setObjectName(QStringLiteral("rbCelsius"));
+        rbCelsius->setChecked(true);
+
+        degreeRadioGrid->addWidget(rbCelsius);
+
+        rbFahrenheit = new QRadioButton(horizontalLayoutWidget);
+        rbFahrenheit->setObjectName(QStringLiteral("rbFahrenheit"));
+
+        degreeRadioGrid->addWidget(rbFahrenheit);
+
         MainWindow->setCentralWidget(centralWidget);
         menuBar = new QMenuBar(MainWindow);
         menuBar->setObjectName(QStringLiteral("menuBar"));
-        menuBar->setGeometry(QRect(0, 0, 1099, 21));
+        menuBar->setGeometry(QRect(0, 0, 486, 21));
         MainWindow->setMenuBar(menuBar);
         mainToolBar = new QToolBar(MainWindow);
         mainToolBar->setObjectName(QStringLiteral("mainToolBar"));
@@ -102,11 +121,12 @@ public:
     void retranslateUi(QMainWindow *MainWindow)
     {
         MainWindow->setWindowTitle(QApplication::translate("MainWindow", "MainWindow", nullptr));
-        plainTextEdit_3->setPlainText(QApplication::translate("MainWindow", "Air Pressure", nullptr));
-        plainTextEdit->setPlainText(QApplication::translate("MainWindow", "Temperature", nullptr));
-        plainTextEdit_2->setPlainText(QApplication::translate("MainWindow", "Air Humidity", nullptr));
-        Degrees->setText(QApplication::translate("MainWindow", "Graden", nullptr));
-        Fahrenheit->setText(QApplication::translate("MainWindow", "Fahrenheit", nullptr));
+        lblTemperature->setText(QApplication::translate("MainWindow", "Temperature: -", nullptr));
+        lblPressure->setText(QApplication::translate("MainWindow", "Pressure: -", nullptr));
+        lblHumidity->setText(QApplication::translate("MainWindow", "Humidity: -", nullptr));
+        lblDateTime->setText(QApplication::translate("MainWindow", "Date: - Time: -", nullptr));
+        rbCelsius->setText(QApplication::translate("MainWindow", "Celsius", nullptr));
+        rbFahrenheit->setText(QApplication::translate("MainWindow", "Fahrenheit", nullptr));
     } // retranslateUi
 
 };

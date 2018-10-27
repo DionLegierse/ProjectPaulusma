@@ -6,10 +6,15 @@
 #include <QSqlTableModel>
 #include <QString>
 
-using namespace std;
-
-const static QString QueryLoadAllValues = "SELECT tblvalue.intTemperature, tblvalue.intHumidity, tblvalue.intPressure "
-                                          "FROM tblValue ORDER BY tblvalue.ID DESC LIMIT 1;";
+void MainWindow::set_database(){
+    // Connection with database
+    this->db = QSqlDatabase::addDatabase("QMYSQL");
+    this->db.setHostName("databases.aii.avans.nl");
+    this->db.setPort(3306);
+    this->db.setUserName("dallegie");
+    this->db.setPassword("Ab12345");
+    this->db.setDatabaseName("dallegie_db");
+}
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -17,42 +22,20 @@ MainWindow::MainWindow(QWidget *parent) :
 {
     ui->setupUi(this);
 
-    // Connection with database
-    QSqlDatabase db = QSqlDatabase::addDatabase("QMYSQL");
-    db.setHostName("databases.aii.avans.nl");
-    db.setPort(3306);
-    db.setUserName("dallegie");
-    db.setPassword("Ab12345");
-    db.setDatabaseName("dallegie_db");
+    //setup the connection with the database
+    this->set_database();
 
     if(db.open()){
         qDebug() << "DB connected";
 
-        QSqlQuery queryTest;
-        queryTest.prepare(QueryLoadAllValues); //Query prepared for use
+        this->queryModel = new QSqlQueryModel(); //Create new Model
 
-        if(queryTest.exec()){ //Execution of the query
-            queryTest.first();
+        this->queryModel->clear(); //Clear the data in the modType
+        this->queryModel->setQuery(LOAD_ALL_MEASUMENTS_DAYS_TIMES); //Set the new query in the modType
+        ui->tvDatesTimes->setModel(this->queryModel);
+        ui->tvDatesTimes->hideColumn(0);
+        ui->tvDatesTimes->resizeColumnsToContents();
 
-            if(temperature){
-                ui->lcdTemperature->display((queryTest.value(0).toInt()/10));           // Shows degrees
-            }else{
-                 ui->lcdTemperature->display((queryTest.value(0).toInt()/10 * 1.8 + 32));// Shows fahrenheit
-            }
-
-            ui->lcdAirHumidity->display(queryTest.value(1).toInt());               // Shows airHumidity
-            ui->lcdAirPressure->display(queryTest.value(2).toInt());                      // Shows airPressure
-        }
-
-        modType = new QSqlQueryModel(); //Create new Model
-
-        queryTest.prepare("Select tbldateandtime.ID, tbldateandtime.dateDate, tbldateandtime.timeTime from tbldateandtime order by ID DESC;"); //Second query
-        if(queryTest.exec()){
-            modType->clear(); //Clear the data in the modType
-            modType->setQuery(queryTest); //Set the new query in the modType
-            ui->Date->setModel(modType);
-            ui->Date->resizeColumnsToContents();
-         }
 
     }else{
         QSqlError err = db.lastError(); //If error occurred, then print Error.
@@ -65,67 +48,81 @@ MainWindow::MainWindow(QWidget *parent) :
 MainWindow::~MainWindow()
 {
     delete ui;
+    delete this->queryModel;
+
 }
 
-void MainWindow::on_Date_clicked(const QModelIndex &index)
+void MainWindow::update_text_boxes()
 {
-    QSqlQuery queryTest; //Set new query
+    QString temp;
 
-    QVariant data = index.data(); //The variant contains an index that is given
+    temp = "Date: " + this->currentSelectedMeasurement.date + " Time: " + this->currentSelectedMeasurement.time;
+    ui->lblDateTime->setText(temp);
 
-    modType = new QSqlQueryModel; //Create new Model
+    if(this->isTempCelsius)
+        temp =  "Temperature: "
+                + QString::number(this->currentSelectedMeasurement.temperature / 10, 'd', 1)
+                + " degrees Celsius"; //create string for temperature measurement in celsius
+    else
+        temp = "Temperature: "
+               + QString::number(((this->currentSelectedMeasurement.temperature / 10) * 1.8) + 32, 'd', 1)
+               + " degrees Fahrenheit"; //create string for temperature measurement in fahrenheit
 
-    idString = data.toString(); //convert Data to a string
+    this->ui->lblTemperature->setText(temp);
 
-    queryTest.prepare("SELECT tbldateandtime.ID From tbldateandtime WHERE tbldateandtime.ID = '"+idString+"' ORDER BY tbldateandtime.ID DESC;"); //Query prepared for use
-    if(queryTest.exec()){ //Execution of the query
-        queryTest.first();
+    temp = "Humidity: "
+           + QString::number(this->currentSelectedMeasurement.humidity)
+           + "%"; //create string for humidity measurement in %
+
+    this->ui->lblHumidity->setText(temp);
+
+    temp = "Pressure: "
+           + QString::number(this->currentSelectedMeasurement.pressure)
+           + " millibar"; //create string for pressure measurement in mBar
+
+    this->ui->lblPressure->setText(temp);
+}
+
+void MainWindow::on_tvDatesTimes_clicked(const QModelIndex &index)
+{
+    this->isAValueSelected = true;
+    auto row = index.row();
+    this->ui->tvDatesTimes->selectRow(row);
+
+    QString queryString = LOAD_VALUES_FROM_DATETIME; //set the query for getting temperature, humidity, pressure
+    queryString += this->ui->tvDatesTimes->model()->index(row,0).data().toString(); //append the ID of the measurement to get to the string
+    QSqlQuery query(queryString);
+
+    query.exec();
+    query.first();//select the first record
+
+    //store the current measurement information to make it easier to edit the data later
+    this->currentSelectedMeasurement.temperature = query.value(TEMPERATURE).toDouble();
+    this->currentSelectedMeasurement.humidity = query.value(HUMIDITY).toInt();
+    this->currentSelectedMeasurement.pressure = query.value(PRESSURE).toInt();
+    this->currentSelectedMeasurement.date = this->ui->tvDatesTimes->model()->index(row,DATE).data().toString();
+    this->currentSelectedMeasurement.time = this->ui->tvDatesTimes->model()->index(row,TIME).data().toString();
+
+    this->update_text_boxes();
+}
+
+void MainWindow::on_rbCelsius_toggled(bool checked)
+{
+    if(checked){
+        this->isTempCelsius = true;
+
+        if(this->isAValueSelected)
+            this->update_text_boxes();
     }
 
-    queryTest.prepare("SELECT tblvalue.intTemperature, tblvalue.intHumidity, tblvalue.intPressure FROM tblValue WHERE tblvalue.ID = '"+idString+"' ORDER BY tblvalue.ID DESC LIMIT 1;"); //Query prepared for use
-    if(queryTest.exec()){ //Execution of the query
-        queryTest.first();
-        if(temperature){
-            ui->lcdTemperature->display((queryTest.value(0).toInt()/10));           // Shows degrees
-        }else{
-             ui->lcdTemperature->display((queryTest.value(0).toInt()/10 * 1.8 + 32));//Fahrenheit
-        }
-        ui->lcdAirHumidity->display(queryTest.value(1).toInt());
-        ui->lcdAirPressure->display(queryTest.value(2).toInt());
-    }
-
 }
 
-void MainWindow::on_Degrees_clicked()
+void MainWindow::on_rbFahrenheit_toggled(bool checked)
 {
-    temperature = 1;                                                                // Set temperature as degrees
-    ui->Degrees->setChecked(1);                                                      // Updates radiobuttons
-    ui->Fahrenheit->setChecked(0);
-    updateTemperature();                                                            // Updates Temperature
-}
+    if(checked){
+        this->isTempCelsius = false;
 
-void MainWindow::on_Fahrenheit_clicked()
-{
-    temperature = 0;                                                                // Set temperature as fahrenheit
-    ui->Degrees->setChecked(0);                                                      // Updates radiobuttons
-    ui->Fahrenheit->setChecked(1);
-    updateTemperature();                                                            // Updates Temperature
-}
-
-void MainWindow::updateTemperature()
-{
-    QSqlQuery queryTest;                                                             // Set new query
-    if( idString != "") {                                                            // Checks if there was a selection in the tablevieuw
-        queryTest.prepare("SELECT tblvalue.intTemperature FROM tblValue WHERE tblvalue.ID = '"+idString+"' ORDER BY tblvalue.ID DESC LIMIT 1;"); //Query prepared for use
-    } else {
-        queryTest.prepare("SELECT tblvalue.intTemperature FROM tblValue ORDER BY tblvalue.ID DESC LIMIT 1;");
-    }
-    if(queryTest.exec()){                                                            //Execution of the query
-         queryTest.first();
-        if(temperature){
-            ui->lcdTemperature->display((queryTest.value(0).toInt()/10));            //Degrees
-        }else{
-            ui->lcdTemperature->display((queryTest.value(0).toInt()/10 * 1.8 + 32)); // Shows fahrenheit
-        }
+        if(this->isAValueSelected)
+            this->update_text_boxes();
     }
 }
