@@ -48,7 +48,7 @@ public:
     QLabel *lblChartOptions;
     QWidget *gridLayoutWidget_3;
     QGridLayout *chartGrid;
-    QWidget *widget;
+    QWidget *layoutWidget;
     QHBoxLayout *degreeRadioGrid;
     QRadioButton *rbCelsius;
     QRadioButton *rbFahrenheit;
@@ -60,15 +60,15 @@ public:
     {
         if (MainWindow->objectName().isEmpty())
             MainWindow->setObjectName(QStringLiteral("MainWindow"));
-        MainWindow->resize(419, 582);
+        MainWindow->resize(447, 582);
         centralWidget = new QWidget(MainWindow);
         centralWidget->setObjectName(QStringLiteral("centralWidget"));
         tvDatesTimes = new QTableView(centralWidget);
         tvDatesTimes->setObjectName(QStringLiteral("tvDatesTimes"));
-        tvDatesTimes->setGeometry(QRect(9, 9, 181, 511));
+        tvDatesTimes->setGeometry(QRect(9, 9, 211, 511));
         gridLayoutWidget = new QWidget(centralWidget);
         gridLayoutWidget->setObjectName(QStringLiteral("gridLayoutWidget"));
-        gridLayoutWidget->setGeometry(QRect(200, 10, 211, 141));
+        gridLayoutWidget->setGeometry(QRect(230, 10, 211, 141));
         gridMeasurementInfo = new QGridLayout(gridLayoutWidget);
         gridMeasurementInfo->setSpacing(6);
         gridMeasurementInfo->setContentsMargins(11, 11, 11, 11);
@@ -96,7 +96,7 @@ public:
 
         gridLayoutWidget_2 = new QWidget(centralWidget);
         gridLayoutWidget_2->setObjectName(QStringLiteral("gridLayoutWidget_2"));
-        gridLayoutWidget_2->setGeometry(QRect(200, 160, 211, 151));
+        gridLayoutWidget_2->setGeometry(QRect(230, 160, 211, 151));
         chartOptionsGrid = new QGridLayout(gridLayoutWidget_2);
         chartOptionsGrid->setSpacing(6);
         chartOptionsGrid->setContentsMargins(11, 11, 11, 11);
@@ -135,27 +135,27 @@ public:
 
         gridLayoutWidget_3 = new QWidget(centralWidget);
         gridLayoutWidget_3->setObjectName(QStringLiteral("gridLayoutWidget_3"));
-        gridLayoutWidget_3->setGeometry(QRect(420, 10, 791, 511));
+        gridLayoutWidget_3->setGeometry(QRect(450, 10, 761, 511));
         chartGrid = new QGridLayout(gridLayoutWidget_3);
         chartGrid->setSpacing(6);
         chartGrid->setContentsMargins(11, 11, 11, 11);
         chartGrid->setObjectName(QStringLiteral("chartGrid"));
         chartGrid->setContentsMargins(0, 0, 0, 0);
-        widget = new QWidget(centralWidget);
-        widget->setObjectName(QStringLiteral("widget"));
-        widget->setGeometry(QRect(200, 490, 209, 23));
-        degreeRadioGrid = new QHBoxLayout(widget);
+        layoutWidget = new QWidget(centralWidget);
+        layoutWidget->setObjectName(QStringLiteral("layoutWidget"));
+        layoutWidget->setGeometry(QRect(230, 490, 209, 23));
+        degreeRadioGrid = new QHBoxLayout(layoutWidget);
         degreeRadioGrid->setSpacing(6);
         degreeRadioGrid->setContentsMargins(11, 11, 11, 11);
         degreeRadioGrid->setObjectName(QStringLiteral("degreeRadioGrid"));
         degreeRadioGrid->setContentsMargins(0, 0, 0, 0);
-        rbCelsius = new QRadioButton(widget);
+        rbCelsius = new QRadioButton(layoutWidget);
         rbCelsius->setObjectName(QStringLiteral("rbCelsius"));
         rbCelsius->setChecked(true);
 
         degreeRadioGrid->addWidget(rbCelsius);
 
-        rbFahrenheit = new QRadioButton(widget);
+        rbFahrenheit = new QRadioButton(layoutWidget);
         rbFahrenheit->setObjectName(QStringLiteral("rbFahrenheit"));
 
         degreeRadioGrid->addWidget(rbFahrenheit);
@@ -163,7 +163,7 @@ public:
         MainWindow->setCentralWidget(centralWidget);
         menuBar = new QMenuBar(MainWindow);
         menuBar->setObjectName(QStringLiteral("menuBar"));
-        menuBar->setGeometry(QRect(0, 0, 419, 21));
+        menuBar->setGeometry(QRect(0, 0, 447, 21));
         MainWindow->setMenuBar(menuBar);
         mainToolBar = new QToolBar(MainWindow);
         mainToolBar->setObjectName(QStringLiteral("mainToolBar"));
