@@ -5,6 +5,24 @@
 #include <iostream>
 #include <QSqlTableModel>
 #include <QString>
+#include <String>
+
+MainWindow::MainWindow(QWidget *parent) :
+    QMainWindow(parent),
+    ui(new Ui::MainWindow)
+{
+    ui->setupUi(this);
+
+    //setup the connection with the database
+    this->set_database();
+
+    //fill the table view with the dates and times for the database
+    this->init_tableview_date_time();
+
+    this->init_cmbDates();
+
+    qDebug() << this->width();
+}
 
 void MainWindow::init_tableview_date_time(){
     if(db.open()){
@@ -48,26 +66,6 @@ void MainWindow::set_database(){
     this->db.setUserName("dallegie");
     this->db.setPassword("Ab12345");
     this->db.setDatabaseName("dallegie_db");
-}
-
-MainWindow::MainWindow(QWidget *parent) :
-    QMainWindow(parent),
-    ui(new Ui::MainWindow)
-{
-    ui->setupUi(this);
-
-    //setup the connection with the database
-    this->set_database();
-
-    //fill the table view with the dates and times for the database
-    this->init_tableview_date_time();
-
-    this->init_cmbDates();
-
-    this->lineChart = new QtCharts::QChart;
-    this->measurementSeries = new QtCharts::QLineSeries;
-    this->xAxis = new QtCharts::QCategoryAxis;
-    this->chartView = new QtCharts::QChartView;
 }
 
 MainWindow::~MainWindow()
@@ -151,22 +149,82 @@ void MainWindow::on_rbFahrenheit_toggled(bool checked)
     }
 }
 
-void MainWindow::fill_chart_values(QSqlQuery& query){
-    query.first();
-    this->measurementSeries->clear();
-    qreal i = 0;
-    do{
-        this->measurementSeries->append(i,query.value(2).toDouble());
-        //this->xAxis->append(query.value(1).toString(),i);
-        i++;
-    }while(query.next());
+void MainWindow::check_if_chart_is_set(){
+    if(!this->isChartPointersSet){
+        this->lineChart = new QtCharts::QChart;
+        this->measurementSeries = new QtCharts::QLineSeries;
+        this->chartView = new QtCharts::QChartView;
+        this->xAxisDateTime = new QtCharts::QDateTimeAxis;
+        this->yAxisValues = new QtCharts::QValueAxis;
 
+        this->isChartPointersSet = true;
+    }else{
+        this->ui->chartGrid->removeWidget(this->chartView);
+
+        delete this->lineChart;
+        delete this->measurementSeries;
+        delete this->chartView;
+        delete this->xAxisDateTime;
+        delete this->yAxisValues;
+
+        this->lineChart = new QtCharts::QChart;
+        this->measurementSeries = new QtCharts::QLineSeries;
+        this->chartView = new QtCharts::QChartView;
+        this->xAxisDateTime = new QtCharts::QDateTimeAxis;
+        this->yAxisValues = new QtCharts::QValueAxis;
+    }
+}
+
+void MainWindow::set_correct_y_format(){
+    if(this->ui->rbTemperature->isChecked()){
+        if(this->isTempCelsius){
+            this->yAxisValues->setLabelFormat("%.1f");
+            this->yAxisValues->setTitleText("Degrees Celsius");
+        }else{
+            this->yAxisValues->setLabelFormat("%.1f");
+            this->yAxisValues->setTitleText("Degrees Fahrenheit");
+        }
+    }else if(this->ui->rbHumidity->isChecked()){
+        this->yAxisValues->setLabelFormat("%.0f\%");
+        this->yAxisValues->setTitleText("Humidity");
+    }else if(this->ui->rbPressure->isChecked()){
+        this->yAxisValues->setLabelFormat("%.0f");
+        this->yAxisValues->setTitleText("Pressure in millibar");
+    }
+}
+
+void MainWindow::initialize_chart(){
     this->lineChart->addSeries(this->measurementSeries);
-    this->lineChart->createDefaultAxes();
-    //this->lineChart->setAxisX(this->xAxis, this->measurementSeries);
     this->lineChart->legend()->hide();
 
-    // Change the line color and weight
+    this->xAxisDateTime->setTickCount(10);
+    this->xAxisDateTime->setFormat("hh:mm:ss");
+    this->xAxisDateTime->setTitleText("Time");
+    this->lineChart->addAxis(this->xAxisDateTime, Qt::AlignBottom);
+    this->measurementSeries->attachAxis(this->xAxisDateTime);
+
+    this->set_correct_y_format();
+    this->lineChart->addAxis(this->yAxisValues, Qt::AlignLeft);
+    this->measurementSeries->attachAxis(this->yAxisValues);
+}
+
+void MainWindow::fill_chart_values(QSqlQuery& query){
+
+    this->check_if_chart_is_set();
+
+    query.first();
+    this->measurementSeries->clear();
+    do{
+        QDateTime measurementTime;
+        int hour = query.value(1).toString().left(2).toInt();
+        int minute = query.value(1).toString().left(5).right(2).toInt();
+        int second = query.value(1).toString().right(2).toInt();
+        measurementTime.setTime(QTime(hour,minute,second));
+        this->measurementSeries->append(measurementTime.toMSecsSinceEpoch(),query.value(2).toDouble());
+    }while(query.next());
+
+    this->initialize_chart();
+
     QPen pen(QRgb(0x000000));
     pen.setWidth(1);
     this->measurementSeries->setPen(pen);
@@ -178,13 +236,22 @@ void MainWindow::fill_chart_values(QSqlQuery& query){
 
 void MainWindow::on_pbGenerateChart_pressed()
 {
+
     QSqlQuery getMeasurementQuery;
     if(this->ui->cmbDays->currentText() != "(select day)"){
+        if(this->width() != MAIN_WINDOW_CHART_WIDTH)
+            this->resize(MAIN_WINDOW_CHART_WIDTH, this->height());
+
         if(this->ui->rbTemperature->isChecked()){
             getMeasurementQuery.prepare(FIND_ALL_TEMPERATURE_ON_DAY + ui->cmbDays->currentText() + "\"");
-            getMeasurementQuery.exec();
-            this->fill_chart_values(getMeasurementQuery);
+        }else if(this->ui->rbHumidity->isChecked()){
+            getMeasurementQuery.prepare(FIND_ALL_HUMIDITY_ON_DAY + ui->cmbDays->currentText() + "\"");
+        }else if(this->ui->rbPressure->isChecked()){
+            getMeasurementQuery.prepare(FIND_ALL_PRESSURE_ON_DAY + ui->cmbDays->currentText() + "\"");
         }
+
+        getMeasurementQuery.exec();
+        this->fill_chart_values(getMeasurementQuery);
     }
 }
 

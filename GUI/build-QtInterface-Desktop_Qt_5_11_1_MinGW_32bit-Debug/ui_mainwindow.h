@@ -36,21 +36,22 @@ public:
     QGridLayout *gridMeasurementInfo;
     QLabel *lblTemperature;
     QLabel *lblPressure;
-    QLabel *lblHumidity;
     QLabel *lblDateTime;
+    QLabel *lblHumidity;
+    QWidget *gridLayoutWidget_2;
+    QGridLayout *chartOptionsGrid;
+    QRadioButton *rbHumidity;
+    QRadioButton *rbPressure;
+    QPushButton *pbGenerateChart;
+    QComboBox *cmbDays;
+    QRadioButton *rbTemperature;
+    QLabel *lblChartOptions;
+    QWidget *gridLayoutWidget_3;
+    QGridLayout *chartGrid;
+    QWidget *widget;
     QHBoxLayout *degreeRadioGrid;
     QRadioButton *rbCelsius;
     QRadioButton *rbFahrenheit;
-    QWidget *gridLayoutWidget_2;
-    QGridLayout *chartOptionsGrid;
-    QComboBox *cmbDays;
-    QPushButton *pbGenerateChart;
-    QLabel *lblChartOptions;
-    QRadioButton *rbTemperature;
-    QRadioButton *rbHumidity;
-    QRadioButton *rbPressure;
-    QWidget *gridLayoutWidget_3;
-    QGridLayout *chartGrid;
     QMenuBar *menuBar;
     QToolBar *mainToolBar;
     QStatusBar *statusBar;
@@ -59,12 +60,12 @@ public:
     {
         if (MainWindow->objectName().isEmpty())
             MainWindow->setObjectName(QStringLiteral("MainWindow"));
-        MainWindow->resize(936, 359);
+        MainWindow->resize(419, 582);
         centralWidget = new QWidget(MainWindow);
         centralWidget->setObjectName(QStringLiteral("centralWidget"));
         tvDatesTimes = new QTableView(centralWidget);
         tvDatesTimes->setObjectName(QStringLiteral("tvDatesTimes"));
-        tvDatesTimes->setGeometry(QRect(9, 9, 181, 291));
+        tvDatesTimes->setGeometry(QRect(9, 9, 181, 511));
         gridLayoutWidget = new QWidget(centralWidget);
         gridLayoutWidget->setObjectName(QStringLiteral("gridLayoutWidget"));
         gridLayoutWidget->setGeometry(QRect(200, 10, 211, 141));
@@ -83,83 +84,86 @@ public:
 
         gridMeasurementInfo->addWidget(lblPressure, 5, 0, 1, 1);
 
-        lblHumidity = new QLabel(gridLayoutWidget);
-        lblHumidity->setObjectName(QStringLiteral("lblHumidity"));
-
-        gridMeasurementInfo->addWidget(lblHumidity, 4, 0, 1, 1);
-
         lblDateTime = new QLabel(gridLayoutWidget);
         lblDateTime->setObjectName(QStringLiteral("lblDateTime"));
 
         gridMeasurementInfo->addWidget(lblDateTime, 2, 0, 1, 1);
 
-        degreeRadioGrid = new QHBoxLayout();
-        degreeRadioGrid->setSpacing(6);
-        degreeRadioGrid->setObjectName(QStringLiteral("degreeRadioGrid"));
-        rbCelsius = new QRadioButton(gridLayoutWidget);
-        rbCelsius->setObjectName(QStringLiteral("rbCelsius"));
-        rbCelsius->setChecked(true);
+        lblHumidity = new QLabel(gridLayoutWidget);
+        lblHumidity->setObjectName(QStringLiteral("lblHumidity"));
 
-        degreeRadioGrid->addWidget(rbCelsius);
-
-        rbFahrenheit = new QRadioButton(gridLayoutWidget);
-        rbFahrenheit->setObjectName(QStringLiteral("rbFahrenheit"));
-
-        degreeRadioGrid->addWidget(rbFahrenheit);
-
-
-        gridMeasurementInfo->addLayout(degreeRadioGrid, 6, 0, 1, 1);
+        gridMeasurementInfo->addWidget(lblHumidity, 4, 0, 1, 1);
 
         gridLayoutWidget_2 = new QWidget(centralWidget);
         gridLayoutWidget_2->setObjectName(QStringLiteral("gridLayoutWidget_2"));
-        gridLayoutWidget_2->setGeometry(QRect(200, 150, 211, 151));
+        gridLayoutWidget_2->setGeometry(QRect(200, 160, 211, 151));
         chartOptionsGrid = new QGridLayout(gridLayoutWidget_2);
         chartOptionsGrid->setSpacing(6);
         chartOptionsGrid->setContentsMargins(11, 11, 11, 11);
         chartOptionsGrid->setObjectName(QStringLiteral("chartOptionsGrid"));
         chartOptionsGrid->setContentsMargins(0, 0, 0, 0);
-        cmbDays = new QComboBox(gridLayoutWidget_2);
-        cmbDays->setObjectName(QStringLiteral("cmbDays"));
-
-        chartOptionsGrid->addWidget(cmbDays, 4, 0, 1, 1);
-
-        pbGenerateChart = new QPushButton(gridLayoutWidget_2);
-        pbGenerateChart->setObjectName(QStringLiteral("pbGenerateChart"));
-
-        chartOptionsGrid->addWidget(pbGenerateChart, 5, 0, 1, 1);
-
-        lblChartOptions = new QLabel(gridLayoutWidget_2);
-        lblChartOptions->setObjectName(QStringLiteral("lblChartOptions"));
-
-        chartOptionsGrid->addWidget(lblChartOptions, 0, 0, 1, 1);
-
-        rbTemperature = new QRadioButton(gridLayoutWidget_2);
-        rbTemperature->setObjectName(QStringLiteral("rbTemperature"));
-
-        chartOptionsGrid->addWidget(rbTemperature, 1, 0, 1, 1);
-
         rbHumidity = new QRadioButton(gridLayoutWidget_2);
         rbHumidity->setObjectName(QStringLiteral("rbHumidity"));
 
-        chartOptionsGrid->addWidget(rbHumidity, 2, 0, 1, 1);
+        chartOptionsGrid->addWidget(rbHumidity, 3, 0, 1, 1);
 
         rbPressure = new QRadioButton(gridLayoutWidget_2);
         rbPressure->setObjectName(QStringLiteral("rbPressure"));
 
-        chartOptionsGrid->addWidget(rbPressure, 3, 0, 1, 1);
+        chartOptionsGrid->addWidget(rbPressure, 4, 0, 1, 1);
+
+        pbGenerateChart = new QPushButton(gridLayoutWidget_2);
+        pbGenerateChart->setObjectName(QStringLiteral("pbGenerateChart"));
+
+        chartOptionsGrid->addWidget(pbGenerateChart, 6, 0, 1, 1);
+
+        cmbDays = new QComboBox(gridLayoutWidget_2);
+        cmbDays->setObjectName(QStringLiteral("cmbDays"));
+
+        chartOptionsGrid->addWidget(cmbDays, 5, 0, 1, 1);
+
+        rbTemperature = new QRadioButton(gridLayoutWidget_2);
+        rbTemperature->setObjectName(QStringLiteral("rbTemperature"));
+        rbTemperature->setChecked(true);
+
+        chartOptionsGrid->addWidget(rbTemperature, 2, 0, 1, 1);
+
+        lblChartOptions = new QLabel(gridLayoutWidget_2);
+        lblChartOptions->setObjectName(QStringLiteral("lblChartOptions"));
+
+        chartOptionsGrid->addWidget(lblChartOptions, 1, 0, 1, 1);
 
         gridLayoutWidget_3 = new QWidget(centralWidget);
         gridLayoutWidget_3->setObjectName(QStringLiteral("gridLayoutWidget_3"));
-        gridLayoutWidget_3->setGeometry(QRect(420, 10, 511, 291));
+        gridLayoutWidget_3->setGeometry(QRect(420, 10, 791, 511));
         chartGrid = new QGridLayout(gridLayoutWidget_3);
         chartGrid->setSpacing(6);
         chartGrid->setContentsMargins(11, 11, 11, 11);
         chartGrid->setObjectName(QStringLiteral("chartGrid"));
         chartGrid->setContentsMargins(0, 0, 0, 0);
+        widget = new QWidget(centralWidget);
+        widget->setObjectName(QStringLiteral("widget"));
+        widget->setGeometry(QRect(200, 490, 209, 23));
+        degreeRadioGrid = new QHBoxLayout(widget);
+        degreeRadioGrid->setSpacing(6);
+        degreeRadioGrid->setContentsMargins(11, 11, 11, 11);
+        degreeRadioGrid->setObjectName(QStringLiteral("degreeRadioGrid"));
+        degreeRadioGrid->setContentsMargins(0, 0, 0, 0);
+        rbCelsius = new QRadioButton(widget);
+        rbCelsius->setObjectName(QStringLiteral("rbCelsius"));
+        rbCelsius->setChecked(true);
+
+        degreeRadioGrid->addWidget(rbCelsius);
+
+        rbFahrenheit = new QRadioButton(widget);
+        rbFahrenheit->setObjectName(QStringLiteral("rbFahrenheit"));
+
+        degreeRadioGrid->addWidget(rbFahrenheit);
+
         MainWindow->setCentralWidget(centralWidget);
         menuBar = new QMenuBar(MainWindow);
         menuBar->setObjectName(QStringLiteral("menuBar"));
-        menuBar->setGeometry(QRect(0, 0, 936, 21));
+        menuBar->setGeometry(QRect(0, 0, 419, 21));
         MainWindow->setMenuBar(menuBar);
         mainToolBar = new QToolBar(MainWindow);
         mainToolBar->setObjectName(QStringLiteral("mainToolBar"));
@@ -178,15 +182,15 @@ public:
         MainWindow->setWindowTitle(QApplication::translate("MainWindow", "Baulusma weather app", nullptr));
         lblTemperature->setText(QApplication::translate("MainWindow", "Temperature: -", nullptr));
         lblPressure->setText(QApplication::translate("MainWindow", "Pressure: -", nullptr));
-        lblHumidity->setText(QApplication::translate("MainWindow", "Humidity: -", nullptr));
         lblDateTime->setText(QApplication::translate("MainWindow", "Date: - Time: -", nullptr));
-        rbCelsius->setText(QApplication::translate("MainWindow", "Celsius", nullptr));
-        rbFahrenheit->setText(QApplication::translate("MainWindow", "Fahrenheit", nullptr));
-        pbGenerateChart->setText(QApplication::translate("MainWindow", "Generate linechart", nullptr));
-        lblChartOptions->setText(QApplication::translate("MainWindow", "Chart options:", nullptr));
-        rbTemperature->setText(QApplication::translate("MainWindow", "Temperature", nullptr));
+        lblHumidity->setText(QApplication::translate("MainWindow", "Humidity: -", nullptr));
         rbHumidity->setText(QApplication::translate("MainWindow", "Humidity", nullptr));
         rbPressure->setText(QApplication::translate("MainWindow", "Pressure", nullptr));
+        pbGenerateChart->setText(QApplication::translate("MainWindow", "Generate linechart", nullptr));
+        rbTemperature->setText(QApplication::translate("MainWindow", "Temperature", nullptr));
+        lblChartOptions->setText(QApplication::translate("MainWindow", "Chart options:", nullptr));
+        rbCelsius->setText(QApplication::translate("MainWindow", "Celsius", nullptr));
+        rbFahrenheit->setText(QApplication::translate("MainWindow", "Fahrenheit", nullptr));
     } // retranslateUi
 
 };
