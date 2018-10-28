@@ -175,7 +175,7 @@ int main(void)
   taskPressureHandle = osThreadCreate(osThread(taskPressure), NULL);
 
   /* definition and creation of taskSendDataWif */
-  osThreadDef(taskSendDataWif, startTaskWifi, osPriorityIdle, 0, 128);
+  osThreadDef(taskSendDataWif, startTaskWifi, osPriorityIdle, 0, 512);
   taskSendDataWifHandle = osThreadCreate(osThread(taskSendDataWif), NULL);
 
   /* USER CODE BEGIN RTOS_THREADS */
@@ -385,9 +385,6 @@ uint8_t isTemperatureDone = NOT_READY;
 uint8_t isHumidityDoneFlag = NOT_READY;
 /* USER CODE END 4 */
 
-//Global variables
-
-
 /* StartTaskTemperature function */
 void StartTaskTemperature(void const * argument)
 {
@@ -396,6 +393,7 @@ void StartTaskTemperature(void const * argument)
 	uint8_t commandLoadTemp = 0xE3;
 	uint8_t buffer[ MAX_BUFFER_SIZE];
 
+	osDelay(WIFI_INIT_TIME);
 	/* Infinite loop */
 	for (;;) {
 		get_data_from_is7021(buffer, &commandLoadTemp);
@@ -410,10 +408,12 @@ void StartTaskTemperature(void const * argument)
 /* startTaskHumidity function */
 void startTaskHumidity(void const * argument)
 {
+  /* USER CODE BEGIN startTaskHumidity */
 	uint8_t commandLoadHumidity = 0xE5;
 
 	uint8_t buffer[MAX_BUFFER_SIZE];
 
+	osDelay(WIFI_INIT_TIME);
 	/* Infinite loop */
 	for (;;) {
 		get_data_from_is7021(buffer, &commandLoadHumidity);
@@ -423,15 +423,17 @@ void startTaskHumidity(void const * argument)
 		isHumidityDoneFlag = READY;
 		vTaskSuspend(taskHumidityHandle);
 	}
+  /* USER CODE END startTaskHumidity */
 }
 
 /* startTaskPressure function */
 void startTaskPressure(void const * argument)
 {
   /* USER CODE BEGIN startTaskPressure */
+	osDelay(WIFI_INIT_TIME);
 	/* Infinite loop */
 	for (;;) {
-		globalPressure = (uint16_t)getPressure();
+		globalPressure = (uint16_t)get_pressure();
 
 		isPressureDone = READY;
 		vTaskSuspend(taskPressureHandle);
@@ -446,6 +448,7 @@ void startTaskWifi(void const * argument)
 	char buffer[MAX_BUFFER_SIZE];
 	int counter = 0;
 
+	osDelay(WIFI_INIT_TIME);
 	initialize_wifi_connection();
 
   /* Infinite loop */
@@ -457,16 +460,16 @@ void startTaskWifi(void const * argument)
 
 		  xSemaphoreTake(UART2BusMutexHandle, STANDARD_MUTEX_TAKE_TIME);
 		  sprintf(buffer, "%d degrees Celcius\n", globalTemperature);
-		  HAL_UART_Transmit(&huart2, buffer, strlen(buffer), 100);
+		  HAL_UART_Transmit(&huart2, (uint8_t *)buffer, strlen(buffer), 100);
 
 		  sprintf(buffer, "%d percent humid\n", globalHumidity);
-		  HAL_UART_Transmit(&huart2, buffer, strlen(buffer), 100);
+		  HAL_UART_Transmit(&huart2, (uint8_t *)buffer, strlen(buffer), 100);
 
 		  sprintf(buffer, "%d millibar of pressure\n", globalPressure);
-		  HAL_UART_Transmit(&huart2, buffer, strlen(buffer), 100);
+		  HAL_UART_Transmit(&huart2, (uint8_t *)buffer, strlen(buffer), 100);
 
 		  sprintf(buffer, "%d metingsronde zijn klaar\n\n", counter);
-		  HAL_UART_Transmit(&huart2, buffer, strlen(buffer), 100);
+		  HAL_UART_Transmit(&huart2, (uint8_t *)buffer, strlen(buffer), 100);
 		  xSemaphoreGive(UART2BusMutexHandle);
 
 		  isHumidityDoneFlag = isPressureDone = isTemperatureDone = NOT_READY;

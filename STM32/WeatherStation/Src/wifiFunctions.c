@@ -6,84 +6,74 @@
  */
 #include "wifiFunctions.h"
 
+const char ssid[] = "baulusma";
+const char password[] = "frikandel";
 
 const char hostname[] = "student.aii.avans.nl";
 const char portNumber[] = "80\0";
-const char postRequest1[] = "POST /ENG/dallegie/ HTTP/1.1";
-const char postRequest2[] = "Host: student.aii.avans.nl";
-const char postRequest3[] = "Content-Type: application/x-www-form-urlencoded";
-const char postRequest4[] = "cache-control: no-cache";
-//const char postRequest5[] = "humidity=60&pressure=1018&temperature=253"
-const char postRequest5[] = "------WebKitFormBoundary7MA4YWxkTrZu0gW--";
+const char postRequest[] =
+"POST /ENG/dallegie/ HTTP/1.1\n"
+"Host: student.aii.avans.nl\n"
+"Content-Type: application/x-www-form-urlencoded\n";
+
+/*const char head[] =	"HEAD / HTTP/1.1\n"
+					"Host: student.aii.avans.nl\n\n";*/
+
+void send_data_to_esp(uint8_t str[], uint8_t rsp[], uint16_t amountOfAttempts){
+	char buffer[80];
+	uint16_t attempt = 0;
+
+	memset(buffer,'\0',STANDARD_WIFI_BUFFER_SIZE);
+	//send data to the esp8266
+	HAL_UART_Transmit(&huart1, str, strlen(str), 100);
+	//wait for the response
+	do{
+		++attempt;
+		HAL_UART_Receive(&huart1, (uint8_t *)buffer, STANDARD_WIFI_BUFFER_SIZE, UART_RECEIVE_TIME);
+	}while(!strstr(buffer,rsp) && rsp != NULL && (attempt <= amountOfAttempts));
+}
 
 void initialize_wifi_connection(){
 		uint8_t buffer[STANDARD_WIFI_BUFFER_SIZE];
 
+		//osDelay(10000);
+
+		//setup a the esp8266 in client mode
 		sprintf(buffer, "AT+CWMODE=1\r\n");
-		HAL_UART_Transmit(&huart1, buffer, strlen(buffer), 100);
-		do{
-			HAL_UART_Receive(&huart1, (uint8_t *)buffer, STANDARD_WIFI_BUFFER_SIZE, 100);
-		}while(!strstr(buffer,"OK"));
+		send_data_to_esp(buffer, "OK", STANDARD_ATTEMPT_TIMEOUT);
 
-		sprintf(buffer, "AT+CWJAP=\"baulusma\",\"frikandel\"\r\n");
-		HAL_UART_Transmit(&huart1, buffer, strlen(buffer), 100);
+		//connect the baulusma to a network
+		sprintf(buffer, "AT+CWJAP=\"%s\",\"%s\"\r\n", ssid, password);
+		send_data_to_esp(buffer, "OK", CONNECT_TIMEOUT);
 
-		do{
-			HAL_UART_Receive(&huart1, (uint8_t *)buffer, STANDARD_WIFI_BUFFER_SIZE, 100);
-		}while(!strstr(buffer,"OK"));
+		sprintf(buffer, "AT+CIPMUX=0\r\n");
+		send_data_to_esp(buffer, "OK", STANDARD_ATTEMPT_TIMEOUT);
+
+		sprintf(buffer, "AT+CIPMODE=0\r\n");
+		send_data_to_esp(buffer, "OK", STANDARD_ATTEMPT_TIMEOUT);
 }
 
 void send_data_to_server(int16_t temperature, uint16_t humidity, uint16_t pressure){
-	char buffer[STANDARD_WIFI_BUFFER_SIZE];
+	char buffer[HTTP_HEADER_BUFFER_SIZE];
+	char contentLength[HTTP_HEADER_LINE_LENGTH];
+	char content[HTTP_HEADER_LINE_LENGTH];
+	char atCommand[HTTP_HEADER_LINE_LENGTH];
 
-	sprintf(buffer, "AT+CIPMUX=1\r\n");
-	HAL_UART_Transmit(&huart1, buffer, strlen(buffer), 100);
-	do{
-		HAL_UART_Receive(&huart1, (uint8_t *)buffer, STANDARD_WIFI_BUFFER_SIZE, 100);
-	}while(!strstr(buffer, "OK"));
+	sprintf(buffer, "AT+CIPSTART=\"TCP\",\"%s\",%s\r\n",hostname,portNumber);
+	send_data_to_esp(buffer, "OK", STANDARD_ATTEMPT_TIMEOUT);
 
-	sprintf(buffer, "AT+CIPSTART=0,\"TCP\",\"%s\",%s\r\n",hostname,portNumber,portNumber);
-	HAL_UART_Transmit(&huart1, buffer, strlen(buffer), 100);
+	sprintf(content, "humidity=%d&pressure=%d&temperature=%d", humidity, pressure, temperature);
+	sprintf(contentLength, "Content-Length: %d\n\n", strlen(content));
 
-	do{
-		HAL_UART_Receive(&huart1, (uint8_t *)buffer, STANDARD_WIFI_BUFFER_SIZE, 100);
-	}while(!strstr(buffer, "OK"));
+	strcpy(buffer, postRequest);
+	strcat(buffer, contentLength);
+	strcat(buffer, content);
 
+	sprintf(atCommand, "AT+CIPSEND=%d\r\n", strlen(buffer));
+	send_data_to_esp(atCommand, "OK", STANDARD_ATTEMPT_TIMEOUT);
 
-	sprintf(buffer, "CIPSEND=0,\"%s ",postRequest1);
-	HAL_UART_Transmit(&huart1, buffer, strlen(buffer), 100);
-	osDelay(1000);
+	send_data_to_esp(buffer, "</body>", RESPONCE_TIMEOUT);
 
-	sprintf(buffer, "%s ",postRequest2);
-	HAL_UART_Transmit(&huart1, buffer, strlen(buffer), 100);
-	osDelay(1000);
-
-	sprintf(buffer, "%s ",postRequest3);
-	HAL_UART_Transmit(&huart1, buffer, strlen(buffer), 100);
-	osDelay(1000);
-
-	sprintf(buffer, "%s ",postRequest4);
-	HAL_UART_Transmit(&huart1, buffer, strlen(buffer), 100);
-	osDelay(1000);
-
-	sprintf(buffer, "temperature=255&humidity=34&pressure=1002 ");
-	HAL_UART_Transmit(&huart1, buffer, strlen(buffer), 100);
-
-	sprintf(buffer, "%s\"\r\n",postRequest5);
-	HAL_UART_Transmit(&huart1, buffer, strlen(buffer), 100);
-	osDelay(1000);
-
-	do{
-		HAL_UART_Receive(&huart1, (uint8_t *)buffer, STANDARD_WIFI_BUFFER_SIZE, 100);
-	}while(!strstr(buffer, "OK"));
-
-	sprintf(buffer, "AT+CIPCLOSE=0\r\n");
-	HAL_UART_Transmit(&huart1, buffer, strlen(buffer), 100);
-
-	do{
-		HAL_UART_Receive(&huart1, (uint8_t *)buffer, STANDARD_WIFI_BUFFER_SIZE, 100);
-	}while(!strstr(buffer, "OK"));
-
-
+	sprintf(buffer, "AT+CIPCLOSE\r\n");
+	send_data_to_esp(buffer, "OK", STANDARD_ATTEMPT_TIMEOUT);
 }
-

@@ -1,7 +1,7 @@
 [PreviousGenFiles]
-HeaderPath=C:/Users/djleg/Documents/ProjectPaulusma/STM32/WeatherStation/Inc
+HeaderPath=C:/Users/Dion Legierse/Documents/ProjectPaulusma/STM32/WeatherStation/Inc
 HeaderFiles=stm32f0xx_it.h;stm32f0xx_hal_conf.h;main.h;FreeRTOSConfig.h;
-SourcePath=C:/Users/djleg/Documents/ProjectPaulusma/STM32/WeatherStation/Src
+SourcePath=C:/Users/Dion Legierse/Documents/ProjectPaulusma/STM32/WeatherStation/Src
 SourceFiles=stm32f0xx_it.c;stm32f0xx_hal_msp.c;main.c;freertos.c;stm32f0xx_hal_timebase_TIM.c;
 
 [PreviousLibFiles]
