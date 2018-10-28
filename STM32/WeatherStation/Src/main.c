@@ -393,6 +393,7 @@ void StartTaskTemperature(void const * argument)
 	uint8_t commandLoadTemp = 0xE3;
 	uint8_t buffer[ MAX_BUFFER_SIZE];
 
+	osDelay(WIFI_INIT_TIME);
 	/* Infinite loop */
 	for (;;) {
 		get_data_from_is7021(buffer, &commandLoadTemp);
@@ -412,6 +413,7 @@ void startTaskHumidity(void const * argument)
 
 	uint8_t buffer[MAX_BUFFER_SIZE];
 
+	osDelay(WIFI_INIT_TIME);
 	/* Infinite loop */
 	for (;;) {
 		get_data_from_is7021(buffer, &commandLoadHumidity);
@@ -428,9 +430,10 @@ void startTaskHumidity(void const * argument)
 void startTaskPressure(void const * argument)
 {
   /* USER CODE BEGIN startTaskPressure */
+	osDelay(WIFI_INIT_TIME);
 	/* Infinite loop */
 	for (;;) {
-		globalPressure = (uint16_t)getPressure();
+		globalPressure = (uint16_t)get_pressure();
 
 		isPressureDone = READY;
 		vTaskSuspend(taskPressureHandle);

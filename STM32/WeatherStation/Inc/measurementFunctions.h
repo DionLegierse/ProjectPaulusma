@@ -79,7 +79,7 @@ typedef struct {
 #define INVALID_PRESSURE (double)0
 #define PASCAL_TO_MILLIBAR_DIVISION_FACTOR (double)100
 
-double getPressure();
+double get_pressure();
 void get_data_from_is7021(uint8_t * buffer, uint8_t * command);
 int16_t convert_data_temp_to_int(uint8_t * buffer);
 uint16_t convert_data_humid_to_int(uint8_t * buffer);

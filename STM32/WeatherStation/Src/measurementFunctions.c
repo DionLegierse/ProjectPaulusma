@@ -6,7 +6,7 @@
  */
 #include "measurementFunctions.h"
 
-void getCalibrationData(uint16_t slaveAddress, uint16_t calibrationDataAddress, calibrationData * data) {
+void get_calibrationData(uint16_t slaveAddress, uint16_t calibrationDataAddress, calibrationData * data) {
 	uint8_t calibBuffer[BUFFER_SIZE_CALIBRATION_DATA];
 
 	HAL_I2C_Mem_Read(&hi2c1, slaveAddress, calibrationDataAddress, sizeof(uint8_t), calibBuffer, BUFFER_SIZE_CALIBRATION_DATA,STANDARD_TIMEOUT);
@@ -25,7 +25,7 @@ void getCalibrationData(uint16_t slaveAddress, uint16_t calibrationDataAddress, 
 	data->dig_P9 = ((uint16_t) calibBuffer[23] << 8) | calibBuffer[22];
 }
 
-void forceBMP280Measurement(uint16_t slaveAddress, uint16_t modeRegisterAddress,
+void force_BMP280_measurement(uint16_t slaveAddress, uint16_t modeRegisterAddress,
 		uint16_t statusRegisterAddress) {
 	uint8_t buffer;
 	uint8_t modeData = FORCE_MODE;
@@ -35,7 +35,7 @@ void forceBMP280Measurement(uint16_t slaveAddress, uint16_t modeRegisterAddress,
 	} while (buffer & MEMORY_NOT_READY_FLAG );
 }
 
-void getRawMeasurmentData(uint16_t slaveAddress,
+void get_raw_measurment_data(uint16_t slaveAddress,
 		uint16_t rawDataRegisterAddress, rawData * data) {
 	uint8_t dataBuffer[BUFFER_SIZE_RAW_DATA ];
 
@@ -49,7 +49,7 @@ void getRawMeasurmentData(uint16_t slaveAddress,
 	data->tXLSB = dataBuffer[5];
 }
 
-void parseData(rawData * raw, parsedData * data) {
+void parse_data(rawData * raw, parsedData * data) {
 	uint32_t lsb;
 	uint32_t msb;
 	uint32_t xlsb;
@@ -65,7 +65,7 @@ void parseData(rawData * raw, parsedData * data) {
 	data->parsedTemperatureData = msb | lsb | xlsb;
 }
 
-void calculateTemperature(parsedData * parsed, calibrationData * calibData) {
+void calculate_temperature(parsedData * parsed, calibrationData * calibData) {
 	double var1;
 	double var2;
 
@@ -79,7 +79,7 @@ void calculateTemperature(parsedData * parsed, calibrationData * calibData) {
 	parsed->temperature = (var1 + var2) / 5120.0;
 }
 
-void calculatePressure(parsedData * parsed, calibrationData * calibData) {
+void calculate_pressure(parsedData * parsed, calibrationData * calibData) {
 	double var1;
 	double var2;
 	double var3;
@@ -109,7 +109,7 @@ void calculatePressure(parsedData * parsed, calibrationData * calibData) {
 	parsed->pressure = pressure / PASCAL_TO_MILLIBAR_DIVISION_FACTOR;
 }
 
-double getPressure() {
+double get_pressure() {
 	uint16_t modeRegisterAddress = 0xF4;
 	uint16_t statusRegisterAddress = 0xF3;
 	uint16_t slaveAddressBMP280 = 0x77 << 1;
@@ -122,24 +122,24 @@ double getPressure() {
 
 	xSemaphoreTake(I2CBusMutexHandle, PRESSURE_MUTEX_TAKE_TIME);
 	// Get calibration data
-	getCalibrationData(slaveAddressBMP280, startAddressCalibData, &calibData);
+	get_calibrationData(slaveAddressBMP280, startAddressCalibData, &calibData);
 
 	// Force sensor to measure and wait for sensor to be done
-	forceBMP280Measurement(slaveAddressBMP280, modeRegisterAddress,
+	force_BMP280_measurement(slaveAddressBMP280, modeRegisterAddress,
 			statusRegisterAddress);
 
 	//get raw data for calculations
-	getRawMeasurmentData(slaveAddressBMP280, rawDataRegisterAddress, &raw);
+	get_raw_measurment_data(slaveAddressBMP280, rawDataRegisterAddress, &raw);
 	xSemaphoreGive(I2CBusMutexHandle);
 
 	// Parse data to make ready for calculation and delete raw data
-	parseData(&raw, &parsed);
+	parse_data(&raw, &parsed);
 
 	// Calculate temperature
-	calculateTemperature(&parsed, &calibData);
+	calculate_temperature(&parsed, &calibData);
 
 	// Calculate pressure
-	calculatePressure(&parsed, &calibData);
+	calculate_pressure(&parsed, &calibData);
 
 	//return parsed.pressure;
 	return parsed.pressure;
