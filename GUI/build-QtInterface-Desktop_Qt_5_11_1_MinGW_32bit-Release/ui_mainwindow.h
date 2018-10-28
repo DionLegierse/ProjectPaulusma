@@ -60,15 +60,15 @@ public:
     {
         if (MainWindow->objectName().isEmpty())
             MainWindow->setObjectName(QStringLiteral("MainWindow"));
-        MainWindow->resize(447, 582);
+        MainWindow->resize(457, 589);
         centralWidget = new QWidget(MainWindow);
         centralWidget->setObjectName(QStringLiteral("centralWidget"));
         tvDatesTimes = new QTableView(centralWidget);
         tvDatesTimes->setObjectName(QStringLiteral("tvDatesTimes"));
-        tvDatesTimes->setGeometry(QRect(9, 9, 211, 511));
+        tvDatesTimes->setGeometry(QRect(9, 9, 221, 511));
         gridLayoutWidget = new QWidget(centralWidget);
         gridLayoutWidget->setObjectName(QStringLiteral("gridLayoutWidget"));
-        gridLayoutWidget->setGeometry(QRect(230, 10, 211, 141));
+        gridLayoutWidget->setGeometry(QRect(240, 10, 211, 141));
         gridMeasurementInfo = new QGridLayout(gridLayoutWidget);
         gridMeasurementInfo->setSpacing(6);
         gridMeasurementInfo->setContentsMargins(11, 11, 11, 11);
@@ -96,7 +96,7 @@ public:
 
         gridLayoutWidget_2 = new QWidget(centralWidget);
         gridLayoutWidget_2->setObjectName(QStringLiteral("gridLayoutWidget_2"));
-        gridLayoutWidget_2->setGeometry(QRect(230, 160, 211, 151));
+        gridLayoutWidget_2->setGeometry(QRect(240, 160, 211, 163));
         chartOptionsGrid = new QGridLayout(gridLayoutWidget_2);
         chartOptionsGrid->setSpacing(6);
         chartOptionsGrid->setContentsMargins(11, 11, 11, 11);
@@ -135,7 +135,7 @@ public:
 
         gridLayoutWidget_3 = new QWidget(centralWidget);
         gridLayoutWidget_3->setObjectName(QStringLiteral("gridLayoutWidget_3"));
-        gridLayoutWidget_3->setGeometry(QRect(450, 10, 761, 511));
+        gridLayoutWidget_3->setGeometry(QRect(460, 10, 751, 511));
         chartGrid = new QGridLayout(gridLayoutWidget_3);
         chartGrid->setSpacing(6);
         chartGrid->setContentsMargins(11, 11, 11, 11);
@@ -143,7 +143,7 @@ public:
         chartGrid->setContentsMargins(0, 0, 0, 0);
         layoutWidget = new QWidget(centralWidget);
         layoutWidget->setObjectName(QStringLiteral("layoutWidget"));
-        layoutWidget->setGeometry(QRect(230, 490, 209, 23));
+        layoutWidget->setGeometry(QRect(240, 490, 209, 23));
         degreeRadioGrid = new QHBoxLayout(layoutWidget);
         degreeRadioGrid->setSpacing(6);
         degreeRadioGrid->setContentsMargins(11, 11, 11, 11);
@@ -163,7 +163,7 @@ public:
         MainWindow->setCentralWidget(centralWidget);
         menuBar = new QMenuBar(MainWindow);
         menuBar->setObjectName(QStringLiteral("menuBar"));
-        menuBar->setGeometry(QRect(0, 0, 447, 21));
+        menuBar->setGeometry(QRect(0, 0, 457, 26));
         MainWindow->setMenuBar(menuBar);
         mainToolBar = new QToolBar(MainWindow);
         mainToolBar->setObjectName(QStringLiteral("mainToolBar"));
