@@ -220,7 +220,10 @@ void MainWindow::fill_chart_values(QSqlQuery& query){
         int minute = query.value(1).toString().left(5).right(2).toInt();
         int second = query.value(1).toString().right(2).toInt();
         measurementTime.setTime(QTime(hour,minute,second));
-        this->measurementSeries->append(measurementTime.toMSecsSinceEpoch(),query.value(2).toDouble());
+        if(!this->isTempCelsius && this->ui->rbTemperature->isChecked())
+            this->measurementSeries->append(measurementTime.toMSecsSinceEpoch(),query.value(2).toDouble() * 1.8 + 32);
+        else
+            this->measurementSeries->append(measurementTime.toMSecsSinceEpoch(),query.value(2).toDouble());
     }while(query.next());
 
     this->initialize_chart();
