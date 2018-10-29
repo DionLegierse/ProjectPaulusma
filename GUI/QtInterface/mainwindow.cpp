@@ -5,8 +5,8 @@
 #include <iostream>
 #include <QSqlTableModel>
 #include <QString>
-#include <String>
 
+//The mainwindows constructor
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow)
@@ -20,10 +20,9 @@ MainWindow::MainWindow(QWidget *parent) :
     this->init_tableview_date_time();
 
     this->init_cmbDates();
-
-    qDebug() << this->width();
 }
 
+//Initialize the table with all the measurements from the database
 void MainWindow::init_tableview_date_time(){
     if(db.open()){
         qDebug() << "DB connected";
@@ -45,6 +44,7 @@ void MainWindow::init_tableview_date_time(){
     }
 }
 
+//Initialize the combobox with all the dates that have measurements
 void MainWindow::init_cmbDates(){
     this->ui->cmbDays->addItem("(select day)");
 
@@ -58,6 +58,7 @@ void MainWindow::init_cmbDates(){
     }while(cmbQuery.next());
 }
 
+//Setup the connection with the database
 void MainWindow::set_database(){
     // Connection with database
     this->db = QSqlDatabase::addDatabase("QMYSQL");
@@ -68,12 +69,18 @@ void MainWindow::set_database(){
     this->db.setDatabaseName("dallegie_db");
 }
 
+//The mainwindow deconstructor
 MainWindow::~MainWindow()
 {
     delete ui;
     delete this->queryModel;
+    delete this->measurementSeries;
+    delete this->chartView;
+    delete this->xAxisDateTime;
+    delete this->yAxisValues;
 }
 
+//Updates all the text boxes with the information from the selected measurement
 void MainWindow::update_text_boxes()
 {
     QString temp;
@@ -105,6 +112,9 @@ void MainWindow::update_text_boxes()
     this->ui->lblPressure->setText(temp);
 }
 
+//Handles the event of a value being selected in the table
+//Extracts the needed data from the database and sends it to the
+//text boxes with the update_text_boxes() method
 void MainWindow::on_tvDatesTimes_clicked(const QModelIndex &index)
 {
     this->isAValueSelected = true;
@@ -128,6 +138,7 @@ void MainWindow::on_tvDatesTimes_clicked(const QModelIndex &index)
     this->update_text_boxes();
 }
 
+//Sets the mode of the temperature measurements to degrees celsius
 void MainWindow::on_rbCelsius_toggled(bool checked)
 {
     if(checked){
@@ -139,6 +150,7 @@ void MainWindow::on_rbCelsius_toggled(bool checked)
 
 }
 
+//Sets the mode of the temperature measurements to degrees fahrenheit
 void MainWindow::on_rbFahrenheit_toggled(bool checked)
 {
     if(checked){
@@ -149,6 +161,8 @@ void MainWindow::on_rbFahrenheit_toggled(bool checked)
     }
 }
 
+//Checks if there already exists a table.
+//Deletes it afterwards and creates a new one.
 void MainWindow::check_if_chart_is_set(){
     if(!this->isChartPointersSet){
         this->lineChart = new QtCharts::QChart;
@@ -175,6 +189,7 @@ void MainWindow::check_if_chart_is_set(){
     }
 }
 
+//Initiliazes the y axis with the correct name and data display format
 void MainWindow::set_correct_y_format(){
     if(this->ui->rbTemperature->isChecked()){
         if(this->isTempCelsius){
@@ -193,6 +208,7 @@ void MainWindow::set_correct_y_format(){
     }
 }
 
+//Initializes the format of the chart
 void MainWindow::initialize_chart(){
     this->lineChart->addSeries(this->measurementSeries);
     this->lineChart->legend()->hide();
@@ -208,6 +224,8 @@ void MainWindow::initialize_chart(){
     this->measurementSeries->attachAxis(this->yAxisValues);
 }
 
+//Fills the chart with all the measurements of the selected
+//Day and measurement type.
 void MainWindow::fill_chart_values(QSqlQuery& query){
 
     this->check_if_chart_is_set();
@@ -237,6 +255,7 @@ void MainWindow::fill_chart_values(QSqlQuery& query){
     this->ui->chartGrid->addWidget(this->chartView);
 }
 
+//Handles the generation of the chart after the generate linechart button is pressed
 void MainWindow::on_pbGenerateChart_pressed()
 {
 

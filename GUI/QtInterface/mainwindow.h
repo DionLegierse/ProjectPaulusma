@@ -18,22 +18,26 @@
 #include <QtCharts/QCategoryAxis>
 #include <QtCharts/QDateTimeAxis>
 
+//A macro with the query to load all measurements dates and times from the database
 #define LOAD_ALL_MEASUMENTS_DAYS_TIMES "SELECT tbldateandtime.ID, "\
                                        "DATE_FORMAT(tbldateandtime.dateDate,\"%d-%m-%Y\") AS `Date`, "\
                                        "TIME_FORMAT(tbldateandtime.timeTime,\"%H:%i:%s\") AS \"Time\" "\
                                        "FROM tbldateandtime "\
                                        "ORDER BY tbldateandtime.dateDate DESC, tbldateandtime.timeTime DESC "
 
+//A macro with the query to the measurement data from the selected day
 #define LOAD_VALUES_FROM_DATETIME "SELECT tblvalue.intTemperature AS TEMP, tblvalue.intHumidity AS HUMID, tblvalue.intPressure AS PRESS "\
                                   "FROM tbldateandtime "\
                                   "INNER JOIN tbldateandtimevalue ON tbldateandtime.ID = tbldateandtimevalue.TimeID "\
                                   "INNER JOIN tblvalue ON tbldateandtimevalue.ValueID = tblvalue.ID "\
                                   "WHERE tbldateandtime.ID = "
 
+//A macro with the query to find all days that measurements have been made on
 #define FIND_ALL_DISTINCT_DATES "SELECT DISTINCT DATE_FORMAT(tbldateandtime.dateDate, \"%d-%m-%Y\") AS `date` "\
                                 "FROM tbldateandtime "\
                                 "ORDER BY `date` DESC"
 
+//A macro with a query to find all temperature measurements on the selected day
 #define FIND_ALL_TEMPERATURE_ON_DAY "SELECT DATE_FORMAT(tbldateandtime.dateDate, \"%d-%m-%Y\") AS `date`, "\
                                     "TIME_FORMAT(tbldateandtime.timeTime, \"%H:%i:%s\"), FORMAT(tblvalue.intTemperature/ 10, 1) AS TEMP "\
                                     "FROM tbldateandtime "\
@@ -41,6 +45,7 @@
                                     "INNER JOIN tblvalue ON tbldateandtimevalue.ValueID = tblvalue.ID "\
                                     "HAVING `date` =\""
 
+//A macro with a query to find all humidity measurements on the selected day
 #define FIND_ALL_HUMIDITY_ON_DAY "SELECT DATE_FORMAT(tbldateandtime.dateDate, \"%d-%m-%Y\") AS `date`, "\
                                  "TIME_FORMAT(tbldateandtime.timeTime, \"%H:%i:%s\"), FORMAT(tblvalue.intHumidity, 1) AS HUMIDITY "\
                                  "FROM tbldateandtime "\
@@ -48,6 +53,7 @@
                                  "INNER JOIN tblvalue ON tbldateandtimevalue.ValueID = tblvalue.ID "\
                                  "HAVING `date` =\""
 
+//A macro with a query to find all pressure measurements on the selected day
 #define FIND_ALL_PRESSURE_ON_DAY "SELECT DATE_FORMAT(tbldateandtime.dateDate, \"%d-%m-%Y\") AS `date`, "\
                                  "TIME_FORMAT(tbldateandtime.timeTime, \"%H:%i:%s\"), tblvalue.intPressure AS PRESSURE "\
                                  "FROM tbldateandtime "\

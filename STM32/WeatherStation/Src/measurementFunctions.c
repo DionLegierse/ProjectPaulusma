@@ -6,6 +6,7 @@
  */
 #include "measurementFunctions.h"
 
+//Get the calibration data from the BMP280 and store it in the calibrationData struct
 void get_calibrationData(uint16_t slaveAddress, uint16_t calibrationDataAddress, calibrationData * data) {
 	uint8_t calibBuffer[BUFFER_SIZE_CALIBRATION_DATA];
 
@@ -25,6 +26,7 @@ void get_calibrationData(uint16_t slaveAddress, uint16_t calibrationDataAddress,
 	data->dig_P9 = ((uint16_t) calibBuffer[23] << 8) | calibBuffer[22];
 }
 
+//Force the BMP280 to perform one measurement cycle
 void force_BMP280_measurement(uint16_t slaveAddress, uint16_t modeRegisterAddress,
 		uint16_t statusRegisterAddress) {
 	uint8_t buffer;
@@ -35,6 +37,7 @@ void force_BMP280_measurement(uint16_t slaveAddress, uint16_t modeRegisterAddres
 	} while (buffer & MEMORY_NOT_READY_FLAG );
 }
 
+//Get the raw data from the measurement registers at the given address
 void get_raw_measurment_data(uint16_t slaveAddress,
 		uint16_t rawDataRegisterAddress, rawData * data) {
 	uint8_t dataBuffer[BUFFER_SIZE_RAW_DATA ];
@@ -49,6 +52,7 @@ void get_raw_measurment_data(uint16_t slaveAddress,
 	data->tXLSB = dataBuffer[5];
 }
 
+//Parse the data to be usefull in the calculations to get the actual measurements
 void parse_data(rawData * raw, parsedData * data) {
 	uint32_t lsb;
 	uint32_t msb;
@@ -65,6 +69,7 @@ void parse_data(rawData * raw, parsedData * data) {
 	data->parsedTemperatureData = msb | lsb | xlsb;
 }
 
+//calculate the temperature with the parsed data and calibration data
 void calculate_temperature(parsedData * parsed, calibrationData * calibData) {
 	double var1;
 	double var2;
@@ -79,6 +84,7 @@ void calculate_temperature(parsedData * parsed, calibrationData * calibData) {
 	parsed->temperature = (var1 + var2) / 5120.0;
 }
 
+//calculate the pressure with the calibration data and parsed data
 void calculate_pressure(parsedData * parsed, calibrationData * calibData) {
 	double var1;
 	double var2;
@@ -109,6 +115,8 @@ void calculate_pressure(parsedData * parsed, calibrationData * calibData) {
 	parsed->pressure = pressure / PASCAL_TO_MILLIBAR_DIVISION_FACTOR;
 }
 
+//Handles getting the entire measurement from the BMP280 and processing it
+//Returns the measured value as a double
 double get_pressure() {
 	uint16_t modeRegisterAddress = 0xF4;
 	uint16_t statusRegisterAddress = 0xF3;
@@ -145,6 +153,7 @@ double get_pressure() {
 	return parsed.pressure;
 }
 
+//Send a command to the is_7021 and give a buffer to store any results
 void get_data_from_is7021(uint8_t * buffer, uint8_t * command) {
 	xSemaphoreTake(I2CBusMutexHandle, STANDARD_MUTEX_TAKE_TIME);
 	HAL_I2C_Master_Transmit(&hi2c1, ADDRESS_OF_is7021, command, 1, STANDARD_TIMEOUT);
@@ -153,11 +162,13 @@ void get_data_from_is7021(uint8_t * buffer, uint8_t * command) {
 	xSemaphoreGive(I2CBusMutexHandle);
 }
 
+//convert the given data from the is7021 to a temperature measurement
 int16_t convert_data_temp_to_int(uint8_t * buffer) {
 	int16_t data = buffer[0] << MSB_OFFSET | buffer[1];
 	return (int16_t) roundf(((((data * 175.72) / 65536) - 46.85) * 10));
 }
 
+//convert the given data from the is7021 to a humidity measurement
 uint16_t convert_data_humid_to_int(uint8_t * buffer) {
 	uint16_t data = buffer[0] << MSB_OFFSET | buffer[1];
 	return (uint16_t) roundf(((((data * 125) / 65536) - 6)));
